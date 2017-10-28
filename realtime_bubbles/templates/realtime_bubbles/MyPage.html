@@ -162,7 +162,7 @@ function sliderChange(val){
 
     oTree.group_decisions = payoff_function(oTree.group_decisions, "vcm");
 	
-	continuousDecision.myDecision = oTree.group_decisions[parseInt(oTree.idInGroup)];
+	continuousDecision.myDecision = parseFloat(val);
 
     draw();
 
@@ -170,20 +170,15 @@ function sliderChange(val){
 
 
 function animate(timestamp) {
-    for (let pcode in oTree.group_members) {
-        if (continuousDecision.groupDecisions === undefined) {
-            window.requestAnimationFrame(animate);
-            return;
-        }
-        let p = continuousDecision.groupDecisions[pcode];
-        if (p === undefined) {
-            window.requestAnimationFrame(animate);
-            return;
-        }
 
-        oTree.group_decisions[p['id']-1] = p;
-
+    for (const playerID in oTree.group_decisions) {
+        const d = oTree.group_decisions[playerID];
+        if (continuousDecision.groupDecisions && d.participant_code in continuousDecision.groupDecisions) {
+            oTree.group_decisions[playerID].x = continuousDecision.groupDecisions[d.participant_code];
+        }
     }
+
+    oTree.group_decisions = payoff_function(oTree.group_decisions, "vcm");
 
 	draw();
 

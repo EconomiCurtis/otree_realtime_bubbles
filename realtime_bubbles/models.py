@@ -51,12 +51,7 @@ class Player(BasePlayer):
 	
 
 	def initial_decision(self):
-		return {
-			'id':self.id_in_group,
-			'participant_code':self.participant.code,
-			'x':random.random(),
-        	'payoff':None,
-		}
+		return random.random()
 
 	round_time = models.PositiveIntegerField(
 		doc="""The length of the real effort task timer."""
