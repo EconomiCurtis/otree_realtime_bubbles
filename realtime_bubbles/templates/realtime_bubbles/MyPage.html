@@ -1,0 +1,452 @@
+{% extends "global/Page.html" %}
+{% load staticfiles otree %}
+
+{% block title %}
+    Bubbles UI
+{% endblock %}
+
+
+{% block global_styles  %}
+
+{{ block.super }}
+
+<style type="text/css">
+	
+
+/*Slider*/
+#slidecontainer {
+    width: 100%;
+}
+.slider_otree {
+	
+	/*! assumes 1000px width action space*/
+	width: 1005px;
+	margin-left: 10px;
+	margin-right: 10px;
+	padding-right: 0px;
+
+    -webkit-appearance: searchfield;
+    height: 25px;
+    background: #d3d3d3;
+    outline: none;
+    opacity: 0.6;
+    height: 15px;
+    border-radius: 3px; 
+    -webkit-transition: .5s;
+    transition: opacity .2s;
+ }
+
+.slider_otree:hover {
+    opacity: 1;
+}
+
+.slider_otree::-webkit-slider-thumb {
+
+    opacity: 0.8;
+    -webkit-appearance: none;
+    appearance: searchfield;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%; 
+    background: #4CAF50;
+    cursor: pointer;
+}
+
+.slider_otree::-moz-range-thumb {
+    width: 25px;
+    height: 25px;
+    background: #4CAF50;
+    cursor: pointer;
+}
+
+
+
+</style>
+
+
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Set up oTree variable used by the otree-redwood components.
+    var oTree = oTree || {};
+    (function() {
+        oTree.group = parseInt("{{ player.group.pk }}");
+        oTree.group = isNaN(oTree.group) ? null : oTree.group;
+        oTree.role = "{{ player.role }}";
+        oTree.participantCode = "{{ player.participant.code }}";
+        oTree.appName = "{{ subsession.app_name }}";
+        oTree.idInGroup = "{{ player.id_in_group }}";
+        oTree.csrfToken = "{{ csrf_token }}";
+        {% if view.is_debug %}
+        oTree.debug = true;
+        {% else %}
+        oTree.debug = false;
+        {% endif %}
+        oTree.group_decisions = {};
+        {% for player in player.group.get_players %}
+            oTree.group_decisions[parseInt("{{ player.id_in_group }}")] = {
+            	'id':parseInt("{{ player.id_in_group }}"),
+            	'participant_code':"{{ player.participant.code }}",
+            	'x':parseInt("{{ player.id_in_group }}") / 5,
+            	'payoff':null,
+            };
+        {% endfor %}
+   })();
+ </script>
+<link
+    rel="import"
+    href="/static/bower_components/polymer/polymer.html" />
+<link
+    rel="import"
+    href="/static/bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link
+    rel="import"
+    href="/static/otree-redwood/webcomponents/redwood-decision/redwood-decision.html">
+<link
+    rel="import"
+    href="/static/otree-redwood/webcomponents/redwood-period/redwood-period.html">
+
+{% endblock%}
+
+
+
+{% block content %}
+
+<table class="tg">
+
+	 <tr>
+	 	<td class="tg-031e" colspan="12" width="1000px">
+    		<div id="container2">
+        	<body onload="draw();">
+           		<canvas class="canvas" id="canvas" width="1000px" height="400px"></canvas>
+    		</body>
+    		</td>
+		</div> 
+	</tr>
+
+	<tr>
+	 	<td class="tg-031e" colspan="12" width="1000px">
+			<input name="otree_slider" type="range" min="0" max="1" value="{{ rand_init_val }}" class="slider_otree" 
+			id="myRange" step="0.005"
+			onchange="sliderChange(this.value);">
+			<span id="sliderText">  {{ rand_init_val|floatformat:"3" }} </span>   		</td>
+		</div> 
+	</tr>
+
+
+</table>
+
+
+
+
+<!-- otree-redwood realtime extensions -->
+<redwood-decision></redwood-decision>
+<redwood-period></redwood-period>
+<!-- end otree-redwood realtime extensions -->
+
+
+<script>
+
+
+var continuousDecision = document.querySelector('redwood-decision');
+
+
+// slider event triggerer
+// trigger updates to canvas image
+function sliderChange(val){
+
+    //draw(my_p);
+    oTree.group_decisions[parseInt(oTree.idInGroup)]['x'] = parseFloat(val);
+
+    oTree.group_decisions = payoff_function(oTree.group_decisions, "vcm");
+	
+	continuousDecision.myDecision = oTree.group_decisions[parseInt(oTree.idInGroup)];
+
+    draw();
+
+}
+
+
+function animate(timestamp) {
+    for (let pcode in oTree.group_members) {
+        if (continuousDecision.groupDecisions === undefined) {
+            window.requestAnimationFrame(animate);
+            return;
+        }
+        let p = continuousDecision.groupDecisions[pcode];
+        if (p === undefined) {
+            window.requestAnimationFrame(animate);
+            return;
+        }
+
+        oTree.group_decisions[p['id']-1] = p;
+
+    }
+
+	draw();
+
+    //have payoff function
+    window.requestAnimationFrame(animate);
+
+    
+}
+
+$(document).ready(animate);
+
+
+// click in action area
+canvas.addEventListener('click', (e) => {
+
+	var mrg = 10;
+	var canvas = document.getElementById('canvas');
+
+	var rect = canvas.getBoundingClientRect();
+	const mousePos = {
+		x: e.clientX - rect.left,
+		y: e.clientY - canvas.offsetTop
+	};
+
+	x = mousePos.x;
+	// canvas.width - (mousePos.clientX - rect.right + mrg);
+
+
+	if ((x < (canvas.width - 2 * mrg)) && (x > 0)){
+		x = (x - 7) / (canvas.width - 2 * mrg) // (x - {dot radius}) / (...)
+		document.getElementById('myRange').value = x;
+		sliderChange(x);
+	} else {
+		x = null
+	};
+
+
+
+    // document.getElementById('id_canvasClick').innerHTML = (price).toFixed(3);
+
+
+});
+
+
+function draw(){
+
+    // DRAW Area!
+    var canvas = document.getElementById('canvas');
+    var ctx = canvas.getContext('2d');
+
+    var wdt = canvas.width; //size of box
+    var ht  = canvas.height
+    var mrg = 10;
+
+    // background
+    ctx.fillStyle = 'black';
+    ctx.fillRect(0,0,wdt,ht);
+    ctx.clearRect(mrg,mrg,(wdt-2*mrg),(ht-2*mrg));
+
+
+    //scale plot area
+    var minY = 0; var maxY = 1;
+    for (var key in oTree.group_decisions){
+    	if (oTree.group_decisions[key]['payoff'] > maxY){
+    		maxY = oTree.group_decisions[key]['payoff']
+    	}
+    }
+    maxY = maxY * 1.05
+
+    //scale payoffs to plot area (between 0 and 1)
+    // create payoffs rescaled
+    for (var key in oTree.group_decisions){
+    	oTree.group_decisions[key]['payoff_rescaled'] = oTree.group_decisions[key]['payoff'] / maxY;
+    }
+
+    gridrange = maxY / 5;
+    gridrange = gridrange / 5;
+    gridrange = Math.floor(gridrange);  
+    gridrange = gridrange * 5
+
+    for (var i = 1; i < 6; i++){
+
+    	var xlevel = ((maxY - (i * gridrange)) / maxY);
+		hor_line_at(xlevel);
+
+	    ctx.font="20px Georgia";
+		ctx.fillStyle = "#cccccc";
+		ctx.fillText((i * gridrange), 20,xlevel * ht - 2);
+
+
+	}
+    // add grid lines to plot
+
+
+
+
+    player_locations(oTree.group_decisions);
+
+
+
+
+
+};
+
+function hor_line_at(xlevel){
+    var canvas = document.getElementById('canvas');
+    var ctx = canvas.getContext('2d');
+
+    var wdt = canvas.width; //size of box
+    var ht  = canvas.height
+    var mrg = 10;
+
+    ctx.strokeStyle = "#cccccc";
+    ctx.beginPath();
+    ctx.moveTo(0, ht * xlevel);
+	ctx.lineTo(wdt, ht * xlevel);
+    ctx.stroke();
+    
+
+}
+
+function player_locations(group){
+
+	// group from oTree.group_decisions
+	for (key in group){
+		playerDot(
+				group[key]['x'],
+				group[key]['payoff_rescaled'],
+				10,
+				group[key]['id']
+			);
+	};
+
+};
+
+
+var colors_hex = ['#d84949', '#4850d8', '#ce48d8', '#5bd848', '#d8d348', '#3bccc2', '#d8a848','#6c5424'];
+var colors_rgb = ['216,73,73','72,80,216','206,72,216','91,216,72','216,211,72','59,204,194','216,168,72','108,84,36'];
+
+function color_concat_rgba(id,alpha){
+	return('rgba(' + colors_rgb[id-1] + "," + alpha + ')')
+};
+
+function playerDot(x, y, mrg, player_id) {
+
+    var ctx = canvas.getContext('2d');
+    ht = canvas.height;
+    wdt = canvas.width;
+    var x = (mrg + ((wdt-2*mrg)) * x); // y coord for p1
+    var y = mrg + (ht-2*mrg) * (1 - y); // x coord for p1
+
+    ctx.strokeStyle = "#666666";
+    ctx.setLineDash([0,0]);
+    ctx.beginPath();
+    ctx.moveTo((x + 7), y);
+    ctx.arc(x, y, 7,0,Math.PI*2,true);  // eye
+    ctx.fillStyle = color_concat_rgba(player_id,0.3	);
+    ctx.fill();
+    ctx.stroke();
+
+}
+
+</script>
+
+
+<script>
+
+// PAYOFF FUNCTION TOWN
+
+//vcm parameters
+var mpcr = 0.3;
+var endow = 100;
+
+//wl
+var wl_a = 20
+var wl_b = 10
+var wl_c = 60
+
+
+
+function payoff_function(group, func = 'vcm'){
+	/*Assume group takes the form oTree.group_decisions
+	Given all players and their locations, 
+	payoff function updates the payoff field in group
+
+	payoff function specific parameters set above, but hopefully changed to config fields with default values
+	*/
+
+	if (func == 'vcm'){
+
+        // calc total group contribution
+        var totalcontrib = 0;
+        for (var key in group) {
+            totalcontrib = totalcontrib + group[key]['x'];
+        }
+
+        // calc individual payoffs
+        for (var key in group) {
+            var payoff = 0;
+
+            payoff = (endow) - (endow * group[key]['x']) + (mpcr * totalcontrib);
+
+            // set each element's payoff attribute
+            // to the calculated payoff. Therefor we calculate
+            // every single player's payoff, and can filter
+            // for a specific player's payoff later.
+
+            group[key]['payoff'] = payoff;
+        }
+
+
+	} else if (func == 'wl'){
+
+        // find the weakest link
+        var min_effort = 1.0;
+        for (var key in group) {
+        	if (group[key]['x'] < totalcontrib){
+        		min_effort = group[key]['x'];
+        	}
+        }
+
+
+        // calc individual payoffs
+        for (var key in group) {
+            var payoff = 0;
+
+            payoff = (wl_a * min_effort) - (wl_b * group[key]['x']) + wl_c;
+
+            // set each element's payoff attribute
+            // to the calculated payoff. Therefor we calculate
+            // every single player's payoff, and can filter
+            // for a specific player's payoff later.
+
+            group[key]['payoff'] = payoff;
+        }
+
+
+	} else {
+		group[key]['payoff'] = group[key]['x'];
+	}
+
+	return(group);
+
+
+}
+
+</script>
+
+	
+<script>
+
+// Slider helper , text
+$(document).on('input change', '#myRange', function() { //Listen to slider changes (input changes)
+    var v=$(this).val(); //Create a Variable (v), and store the value of the input change (Ex. Image 2 [imageURL])
+  	
+   $('#sliderText').html( $(this).val() );
+  });
+
+
+</script>
+
+<script type="text/javascript">
+	
+</script>
+
+{% endblock %}
