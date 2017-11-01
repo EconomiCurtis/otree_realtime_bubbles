@@ -10,10 +10,12 @@ class MyPage(Page):
 
     	return{
     		'rand_init_val':rand.random()
-
-
     	}
 
+
+class BubblesDemo(Page):
+    pass
+    
 
 class ResultsWaitPage(WaitPage):
 
@@ -26,7 +28,8 @@ class Results(Page):
 
 
 page_sequence = [
-    MyPage,
+    #MyPage,
+    BubblesDemo,
     ResultsWaitPage,
     Results
 ]

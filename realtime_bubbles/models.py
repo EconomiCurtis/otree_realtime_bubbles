@@ -8,7 +8,7 @@ from otree_redwood.models import Event, DecisionGroup
 import random
 
 
-author = 'Your name here'
+author = 'Curtis Kephart (economicurtis@gmail.com & James Pettit (james.l.pettit@gmail.com)'
 
 doc = """
 Bubbles UI with Realtime
@@ -41,7 +41,7 @@ class Subsession(BaseSubsession):
 class Group(DecisionGroup):
 	
 	def period_length(self):
-		return 1200
+		return None
 
     # def period_length(self):
     #     return parse_config(self.session.config['config_file'])[self.round_number-1]['period_length']
@@ -51,7 +51,11 @@ class Player(BasePlayer):
 	
 
 	def initial_decision(self):
-		return random.random()
+		return {
+			'id': self.id_in_group,
+			'x': None,
+			'payoff': None,
+		}
 
 	round_time = models.PositiveIntegerField(
 		doc="""The length of the real effort task timer."""
