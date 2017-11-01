@@ -1,0 +1,42 @@
+{% extends "global/Page.html" %}
+{% load staticfiles otree %}
+
+{% block title %}
+    Bubbles UI Demo
+{% endblock %}
+
+{% block scripts %}
+<script>
+    /*
+     * Set up oTree variables for use in JavaScript.
+	 * This binds the oTree template variables to constants usable in
+	 * JavaScript. These are globally accessable by scripts using the
+	 * oTree variable.
+     */
+    var oTree = oTree || {};
+    (function() {
+        oTree.group = {{ player.group.pk | json }};
+        oTree.role = "{{ player.role }}";
+        oTree.participantCode = "{{ player.participant.code }}";
+        oTree.appName = "{{ subsession.app_name }}";
+        oTree.idInGroup = {{ player.id_in_group | json }};
+        oTree.csrfToken = "{{ csrf_token }}";
+        {% if view.is_debug %}
+        oTree.debug = true;
+        {% else %}
+        oTree.debug = false;
+        {% endif %}
+   })();
+ </script>
+
+<link
+    rel="import"
+    href="/static/realtime_bubbles/bubbles-app/bubbles-app.html">
+
+{% endblock%}
+
+{% block content %}
+
+<bubbles-app></bubbles-app>
+
+{% endblock %}
