@@ -13,9 +13,12 @@ class MyPage(Page):
     	return{
     		'rand_init_val':rand.random(),
             'DEBUG':settings.DEBUG
-
     	}
 
+
+class BubblesDemo(Page):
+    pass
+    
 
 class ResultsWaitPage(WaitPage):
 
@@ -76,7 +79,8 @@ def get_output_table(events):
 
 
 page_sequence = [
-    MyPage,
+    #MyPage,
+    BubblesDemo,
     ResultsWaitPage,
     Results
 ]
