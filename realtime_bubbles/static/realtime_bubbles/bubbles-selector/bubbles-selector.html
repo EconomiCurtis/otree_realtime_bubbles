@@ -53,7 +53,7 @@
 			attached() {
 				this._width = this.clientWidth;
 				this._height = this.clientHeight;
-		    this._requestID = window.requestAnimationFrame(this._animate.bind(this));
+		    	this._requestID = window.requestAnimationFrame(this._animate.bind(this));
 			},
 			detached() {
 				window.cancelAnimationFrame(this._requestID);

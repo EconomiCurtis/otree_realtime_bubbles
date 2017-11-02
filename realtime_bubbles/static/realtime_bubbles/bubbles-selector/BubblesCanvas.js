@@ -58,12 +58,22 @@ var BubblesCanvas = BubblesCanvas || {};
 
 	function player_locations(group) {
 		for (let key in group) {
-			playerDot(
-				group[key].x,
-				(group[key].payoff - minPayoff) / (maxPayoff - minPayoff),
-				mrg,
-				group[key].id
-			);
+
+			if (group[key].id == oTree.idInGroup){
+				ownDot(
+					group[key].x,
+					(group[key].payoff - minPayoff) / (maxPayoff - minPayoff),
+					mrg,
+					group[key].id
+				);
+			} else {
+				playerDot(
+					group[key].x,
+					(group[key].payoff - minPayoff) / (maxPayoff - minPayoff),
+					mrg,
+					group[key].id
+				);
+			}
 		};
 
 	}
@@ -73,18 +83,32 @@ var BubblesCanvas = BubblesCanvas || {};
 	}
 
 	function playerDot(x, y, mrg, player_id) {
-    x = (mrg + ((width - 2*mrg)) * x); // y coord for p1
-    y = mrg + (height - 2*mrg) * (1 - y); // x coord for p1
+	    x = (mrg + ((width - 2*mrg)) * x); // y coord for p1
+	    y = mrg + (height - 2*mrg) * (1 - y); // x coord for p1
 
-    ctx.strokeStyle = "#666666"; // 🤘
-    ctx.setLineDash([0, 0]);
-    ctx.beginPath();
-    ctx.moveTo((x + 7), y);
-    ctx.arc(x, y, 7, 0, Math.PI*2, true);  // eye
-    ctx.fillStyle = color_concat_rgba(player_id, 0.3);
-    ctx.fill();
-    ctx.stroke();
+	    ctx.strokeStyle = "#666666"; // 🤘
+	    ctx.setLineDash([0, 0]);
+	    ctx.beginPath();
+	    ctx.moveTo((x + 7), y);
+	    ctx.arc(x, y, 7, 0, Math.PI*2, true);  // eye
+	    ctx.fillStyle = color_concat_rgba(player_id, 0.3);
+	    ctx.fill();
+	    ctx.stroke();
 	}
+
+	function ownDot(x, y, mrg, player_id) {
+	    x = (mrg + ((width - 2*mrg)) * x); // y coord for p1
+	    y = mrg + (height - 2*mrg) * (1 - y); // x coord for p1
+
+	    ctx.strokeStyle = "#666666"; // 🤘
+	    ctx.setLineDash([0, 0]);
+	    ctx.beginPath();
+	    ctx.moveTo((x + 8), y);
+	    ctx.arc(x, y, 8, 0, Math.PI*2, true);  // eye
+	    ctx.fillStyle = 'rgba(65, 97, 255,0.8)';
+	    ctx.fill();
+	    ctx.stroke();
+		}
 
 	BubblesCanvas.draw = draw;
 })();
