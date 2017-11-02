@@ -1,0 +1,86 @@
+<link rel="import" href="/static/bower_components/polymer/polymer.html">
+<link rel="import" href="/static/bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+
+<link rel="import" href="/static/otree-redwood/webcomponents/redwood-decision/redwood-decision.html">
+<link rel="import" href="/static/otree-redwood/webcomponents/redwood-period/redwood-period.html">
+
+<link rel="import" href="/static/realtime_bubbles/bubbles-selector/bubbles-selector.html">
+<link rel="import" href="/static/realtime_bubbles/payoff-graph/payoff-graph.html">
+
+
+<dom-module id="bubbles-app">
+	<template>
+		<style>
+			#period-running-indicator {
+				width: 30px;
+				height: 30px;
+				border-radius: 15px;
+			}
+			#period-running-indicator.period-running-true {
+				background-color: #3c3;
+
+			}
+			#period-running-indicator.period-running-false {
+				background-color: #f00;
+			}
+			bubbles-selector {
+				width: 1000px;
+				height: 400px;
+			}
+		</style>
+
+	  <redwood-period
+	      running="{{ isPeriodRunning }}">
+	  </redwood-period>
+
+    <redwood-decision
+        my-decision="{{ _computeMyDecisionObject(myX) }}"
+				group-decisions="{{ groupDecisions }}"
+        max-per-second="10">
+    </redwood-decision>
+
+    <div class="layout vertical">
+    	<div id="period-running-indicator" class$="period-running-{{ isPeriodRunning }}"></div>
+	    <bubbles-selector value="{{ myX }}" group-decisions="[[ groupDecisions ]]"></bubbles-selector>
+	    <payoff-graph></payoff-graph>
+	  </div>
+
+	</template>
+
+	<script src="PayoffFunction.js"></script>
+	<script>
+		Polymer({
+			is: 'bubbles-app',
+			properties: {
+				myPlannedDecision: {
+					type: Number,
+				},
+				myX: {
+					type: Number,
+					value: 0.5,
+				},
+				groupDecisions: {
+					type: Object,
+				},
+				isPeriodRunning: {
+					type: Boolean,
+				},
+			},
+			_computeMyDecisionObject(myX) {
+				if (!this.groupDecisions) {
+					return;
+				}
+				this.groupDecisions[oTree.participantCode] = {
+					id: oTree.idInGroup,
+					x: myX,
+				};
+				let payoffs = PayoffFunction.compute(this.groupDecisions, 'wl');
+				return {
+					id: oTree.idInGroup,
+					x: myX,
+					payoff: this.groupDecisions[oTree.participantCode].payoff,
+				};
+			},
+		});
+	</script>
+</dom-module>

@@ -1,0 +1,73 @@
+<link rel="import" href="/static/bower_components/polymer/polymer.html">
+
+<dom-module id="bubbles-selector">
+	<template>
+		<link rel="stylesheet" href="range.css">
+		<style>
+			:host {
+				display: block;
+			}
+		</style>
+
+		<canvas
+				id="canvas"
+				width$="[[ _width ]]px"
+				height$="[[ _height ]]px">
+		</canvas>
+
+		<input
+				id="input"
+				type="range"
+				min="0"
+				max="1"
+				step="0.005"
+		    disabled$="[[ disabled ]]"
+        on-change="_inputValueChanged">
+		<span>{{ value }}</span>
+
+	</template>
+
+	<script src="BubblesCanvas.js"></script>
+	<script>
+		Polymer({
+			is: 'bubbles-selector',
+			properties: {
+	    	value: {
+	        type: Number,
+	    		notify: true,
+	        observer: '_parentValueChanged',
+	    	},
+				groupDecisions: {
+					type: Object,
+				},
+	    	disabled: {
+	    		type: Boolean,
+	    	},
+				_width: {
+					type: Number,
+				},
+				_height: {
+					type: Number,
+				},
+			},
+			attached() {
+				this._width = this.clientWidth;
+				this._height = this.clientHeight;
+		    this._requestID = window.requestAnimationFrame(this._animate.bind(this));
+			},
+			detached() {
+				window.cancelAnimationFrame(this._requestID);
+			},
+      _inputValueChanged(event) {
+          this.value = parseFloat(event.target.value);
+      },
+      _parentValueChanged(newValue, oldValue) {
+          this.$.input.value = newValue;
+      },
+			_animate(timestamp) {
+				BubblesCanvas.draw(this.$.canvas.getContext('2d'), this.groupDecisions);
+		    this._requestID = window.requestAnimationFrame(this._animate.bind(this));
+			}
+		});
+	</script>
+</dom-module>
