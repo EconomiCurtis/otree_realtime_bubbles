@@ -18,8 +18,14 @@ Bubbles UI with Realtime
 class Constants(BaseConstants):
 	name_in_url = 'realtime_bubbles'
 	players_per_group = None
-	num_rounds = 1
-	mpcr = 0.3
+	num_rounds = 5
+
+	round_lengths = [200,200,200,200,200]
+	round_payoff_functions = ['vcm','vcm','wl','wl','foo']
+
+	round_var_a =   [0.3, 0.3,    20,20,20]
+	round_var_b =   [100, 100,    10,10,10]
+	round_var_c =   [None, None,  60,60,60]
 
 
 class Subsession(BaseSubsession):
@@ -38,10 +44,18 @@ class Subsession(BaseSubsession):
 			group_matrix.append(players[i:i+players_per_group])
 		self.set_group_matrix(group_matrix)
 
+		for p in self.get_players():
+			p.round_lengths = Constants.round_lengths[self.round_number-1]
+			p.payoff_var_a = Constants.round_var_a[self.round_number-1]
+			p.payoff_var_b = Constants.round_var_b[self.round_number-1]
+			p.payoff_var_c = Constants.round_var_c[self.round_number-1]
+			p.payoff_function = Constants.round_payoff_functions[self.round_number-1]
+
+
 class Group(DecisionGroup):
 	
 	def period_length(self):
-		return 1200
+		return Constants.round_lengths[self.round_number-1]
 
     # def period_length(self):
     #     return parse_config(self.session.config['config_file'])[self.round_number-1]['period_length']
@@ -53,9 +67,21 @@ class Player(BasePlayer):
 	def initial_decision(self):
 		return random.random()
 
-	round_time = models.PositiveIntegerField(
-		doc="""The length of the real effort task timer."""
+	round_lengths = models.PositiveIntegerField(
+		doc="""The length of the round timer."""
 	)
+
+	payoff_function = models.CharField(
+		doc = """payoff function used""")
 
 	payoff_var_a = models.FloatField(
 		doc = """Variable `a` in the payoff function""")
+
+	payoff_var_b = models.FloatField(
+		doc = """Variable `b` in the payoff function""")
+
+	payoff_var_c = models.FloatField(
+		doc = """Variable `c` in the payoff function""")
+
+
+
