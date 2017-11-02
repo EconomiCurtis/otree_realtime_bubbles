@@ -116,6 +116,26 @@
 
 <table class="tg">
 
+
+    {% if DEBUG %}
+    <tr>
+        <h3> Degub Mode</h3>
+        <div id="periodStart" style="background-color:red;width:990px;height:30px;margin-left:20px;margin-bottom:20px;">
+            <h4>Time remaining: <font color="red"><div style="display: inline" id="countdown"></div></font>
+        </div>
+    </tr>
+    {% endif %}
+
+
+     <tr>
+        <td class="tg-031e" colspan="12" width="1000px">
+        <h3>
+            Current Payoff: <span name="current points" id="id_currPoints">...</span>
+        </h3>
+    </td>
+    </tr>
+
+
 	 <tr>
 	 	<td class="tg-031e" colspan="12" width="1000px">
     		<div id="container2">
@@ -152,19 +172,51 @@
 
 var continuousDecision = document.querySelector('redwood-decision');
 
+var redwoodPeriod = document.querySelector('redwood-period');
+
+// onces the period start message is sent:
+redwoodPeriod.addEventListener('period-start', function(){
+
+    document.getElementById("periodStart").style.backgroundColor = "lightblue";
+    countdown( "countdown", 0, {{ player.round_lengths|json }} );
+
+    var val = $('#myRange').val();
+    oTree.group_decisions[parseInt(oTree.idInGroup)]['x'] = parseFloat(val);
+
+    continuousDecision.myDecision = parseFloat(val);
+    oTree.group_decisions = payoff_function(oTree.group_decisions, {{ player.payoff_function|json}});
+    
+    draw();
+    update_payoff_text(oTree.group_decisions);
+
+
+});
+
+
+// continuousDecision.addEventListener('group-decisions-changed', function(){
+//     //this will be called whenever group decisions is changed
+
+
+//     var val = $('#myRange').value = continuousDecision.groupDecisions[oTree.participantCode].x;
+// //check that your dots match up, 
+// //check that sliders match up
+
+// };
+
 
 // slider event triggerer
 // trigger updates to canvas image
 function sliderChange(val){
 
-    //draw(my_p);
     oTree.group_decisions[parseInt(oTree.idInGroup)]['x'] = parseFloat(val);
 
-    oTree.group_decisions = payoff_function(oTree.group_decisions, "vcm");
+    oTree.group_decisions = payoff_function(oTree.group_decisions, {{ player.payoff_function|json}});
 	
 	continuousDecision.myDecision = parseFloat(val);
 
     draw();
+    update_payoff_text(oTree.group_decisions);
+
 
 }
 
@@ -178,9 +230,10 @@ function animate(timestamp) {
         }
     }
 
-    oTree.group_decisions = payoff_function(oTree.group_decisions, "vcm");
+    oTree.group_decisions = payoff_function(oTree.group_decisions, {{ player.payoff_function|json}});
 
 	draw();
+    update_payoff_text(oTree.group_decisions);
 
     //have payoff function
     window.requestAnimationFrame(animate);
@@ -223,6 +276,13 @@ canvas.addEventListener('click', (e) => {
 });
 
 
+function update_payoff_text(gamestate){
+
+    document.getElementById('id_currPoints').innerHTML = (gamestate[oTree.idInGroup]['payoff']).toFixed(1);        
+    
+
+}
+
 function draw(){
 
     // DRAW Area!
@@ -261,12 +321,9 @@ function draw(){
 
     for (var i = 1; i < 6; i++){
 
-    	var xlevel = ((maxY - (i * gridrange)) / maxY);
-		hor_line_at(xlevel);
-
-	    ctx.font="20px Georgia";
-		ctx.fillStyle = "#cccccc";
-		ctx.fillText((i * gridrange), 20,xlevel * ht - 2);
+    	var xlevel = ((i * gridrange) / maxY);
+        var real_level = (xlevel * maxY).toFixed(0)
+		hor_line_at(xlevel, real_level);
 
 
 	}
@@ -283,20 +340,25 @@ function draw(){
 
 };
 
-function hor_line_at(xlevel){
+function hor_line_at(xlevel, real_level){
     var canvas = document.getElementById('canvas');
     var ctx = canvas.getContext('2d');
 
     var wdt = canvas.width; //size of box
     var ht  = canvas.height
     var mrg = 10;
+    xlevel = mrg + (ht-2*mrg) * (1 - xlevel); // x coord for p1
 
     ctx.strokeStyle = "#cccccc";
     ctx.beginPath();
-    ctx.moveTo(0, ht * xlevel);
-	ctx.lineTo(wdt, ht * xlevel);
+    ctx.moveTo(0, xlevel);
+	ctx.lineTo(wdt, xlevel);
     ctx.stroke();
     
+    ctx.font="20px Georgia";
+    ctx.fillStyle = "#cccccc";
+    ctx.fillText(real_level, 20, xlevel);
+
 
 }
 
@@ -372,7 +434,7 @@ function payoff_function(group, func = 'vcm'){
         // calc total group contribution
         var totalcontrib = 0;
         for (var key in group) {
-            totalcontrib = totalcontrib + group[key]['x'];
+            totalcontrib = totalcontrib + endow * group[key]['x'];
         }
 
         // calc individual payoffs
@@ -417,7 +479,10 @@ function payoff_function(group, func = 'vcm'){
 
 
 	} else {
-		group[key]['payoff'] = group[key]['x'];
+        // calc individual payoffs
+        for (var key in group) {
+            group[key]['payoff'] = group[key]['x'];
+        }
 	}
 
 	return(group);
@@ -432,7 +497,7 @@ function payoff_function(group, func = 'vcm'){
 
 // Slider helper , text
 $(document).on('input change', '#myRange', function() { //Listen to slider changes (input changes)
-    var v=$(this).val(); //Create a Variable (v), and store the value of the input change (Ex. Image 2 [imageURL])
+    var v=$(this).val(); //Create a Variable (v), and store the value of the input change 
   	
    $('#sliderText').html( $(this).val() );
   });
@@ -444,4 +509,48 @@ $(document).on('input change', '#myRange', function() { //Listen to slider chang
 	
 </script>
 
+
+<!-- Countdown timer -->
+<script>
+    function countdown( elementName, minutes, seconds )
+    {
+        var element, endTime, hours, mins, msLeft, time;
+
+        function twoDigits( n )
+        {
+            return (n <= 9 ? "0" + n : n);
+        }
+
+        function updateTimer()
+        {
+            msLeft = endTime - (+new Date);
+            if ( msLeft < 1000 ) {
+                element.innerHTML = "0";
+                $('<input>').attr({
+                    type: 'hidden',
+                    name: 'user_text',
+                    value: 'Too Late'
+                }).appendTo('form');
+                $('<input>').attr({
+                    type: 'hidden',
+                    name: 'auto_submit',
+                    value: '1'
+                }).appendTo('form');
+                $('#form').submit();
+            } else {
+                time = new Date( msLeft );
+                hours = time.getUTCHours();
+                mins = time.getUTCMinutes();
+                element.innerHTML = (hours ? hours + ':' + twoDigits( mins ) : mins) + ':' + twoDigits( time.getUTCSeconds() );
+                setTimeout( updateTimer, time.getUTCMilliseconds() + 500 );
+            }
+        }
+
+        element = document.getElementById( elementName );
+        endTime = (+new Date) + 1000 * (60*minutes + seconds) + 500;
+        updateTimer();
+    }
+
+    
+ </script>
 {% endblock %}
