@@ -131,7 +131,7 @@ SESSION_CONFIG_DEFAULTS = {
 
 SESSION_CONFIGS = [
     {
-        'name': 'bubbles_realtime',
+        'name': 'realtime_bubbles',
         'display_name': "Bubbles UI - Realtime",
         'num_demo_participants': 3,
         'app_sequence': ['realtime_bubbles', 'payment_info'],
