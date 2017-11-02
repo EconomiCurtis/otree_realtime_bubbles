@@ -8,7 +8,7 @@ from otree_redwood.models import Event, DecisionGroup
 import random
 
 
-author = 'Curtis Kephart (economicurtis@gmail.com & James Pettit (james.l.pettit@gmail.com)'
+author = 'Curtis Kephart (economicurtis@gmail.com) & James Pettit (james.l.pettit@gmail.com)'
 
 doc = """
 Bubbles UI with Realtime

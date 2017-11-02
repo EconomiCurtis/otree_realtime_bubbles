@@ -40,7 +40,7 @@ var BubblesCanvas = BubblesCanvas || {};
 	  	const xlevel = ((maxPayoff - (i * gridrange)) / maxPayoff);
 			hline_at(xlevel);
 
-		  ctx.font = "20px Georgia";
+		  ctx.font = "18px Ariel";
 			ctx.fillStyle = "#cccccc";
 			ctx.fillText((i * gridrange), 20, xlevel * height - 2);
 		}
@@ -76,7 +76,7 @@ var BubblesCanvas = BubblesCanvas || {};
     x = (mrg + ((width - 2*mrg)) * x); // y coord for p1
     y = mrg + (height - 2*mrg) * (1 - y); // x coord for p1
 
-    ctx.strokeStyle = "#666666";
+    ctx.strokeStyle = "#666666"; // 🤘
     ctx.setLineDash([0, 0]);
     ctx.beginPath();
     ctx.moveTo((x + 7), y);
