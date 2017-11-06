@@ -31,7 +31,7 @@
 
 	  <redwood-period
 	      running="{{ isPeriodRunning }}"
-	      on-period-start="{{ _computeMyDecisionObject(myX) }}">	      
+	      on-period-start="myFunction(myX)"">	      
 	  </redwood-period>
 
     <redwood-decision
@@ -82,6 +82,9 @@
 					x: myX,
 					payoff: this.groupDecisions[oTree.participantCode].payoff,
 				};
+			},
+			myFunction(myX){
+				BubblesCanvas.draw(this.$.canvas.getContext('2d'), this.groupDecisions);
 			},
 		});
 	</script>

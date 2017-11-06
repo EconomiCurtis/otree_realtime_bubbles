@@ -64,12 +64,14 @@
 			},
 			_parentValueChanged(newValue, oldValue) {
 				this.$.input.value = newValue;
+
 			},
 			_animate(timestamp) {
 				this.groupDecisions = PayoffFunction.compute(this.groupDecisions, oTree.payoff_function );
 				BubblesCanvas.draw(this.$.canvas.getContext('2d'), this.groupDecisions);
 				this._requestID = window.requestAnimationFrame(this._animate.bind(this));
 			}
+
 		});
 	</script>
 </dom-module>
