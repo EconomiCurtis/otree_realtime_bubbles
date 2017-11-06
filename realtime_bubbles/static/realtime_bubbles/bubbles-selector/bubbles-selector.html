@@ -30,25 +30,26 @@
 	<script src="BubblesCanvas.js"></script>
 	<script>
 		Polymer({
+			// Create bubbles-selector object class:
 			is: 'bubbles-selector',
 			properties: {
 	    	value: {
-	        type: Number,
-	    		notify: true,
-	        observer: '_parentValueChanged',
+		        type: Number,
+		    	notify: true,
+		        observer: '_parentValueChanged',
 	    	},
-				groupDecisions: {
-					type: Object,
-				},
+			groupDecisions: {
+				type: Object,
+			},
 	    	disabled: {
 	    		type: Boolean,
 	    	},
-				_width: {
-					type: Number,
-				},
-				_height: {
-					type: Number,
-				},
+			_width: {
+				type: Number,
+			},
+			_height: {
+				type: Number,
+			},
 			},
 			attached() {
 				this._width = this.clientWidth;
@@ -58,16 +59,17 @@
 			detached() {
 				window.cancelAnimationFrame(this._requestID);
 			},
-      _inputValueChanged(event) {
-          this.value = parseFloat(event.target.value);
-      },
-      _parentValueChanged(newValue, oldValue) {
-          this.$.input.value = newValue;
-      },
+			_inputValueChanged(event) {
+			  this.value = parseFloat(event.target.value);
+			},
+			_parentValueChanged(newValue, oldValue) {
+			  this.$.input.value = newValue;
+			},
 			_animate(timestamp) {
+				oTree.groupDecisions = PayoffFunction.compute(this.groupDecisions, oTree.payoff_function );
 				BubblesCanvas.draw(this.$.canvas.getContext('2d'), this.groupDecisions);
-		    this._requestID = window.requestAnimationFrame(this._animate.bind(this));
+			this._requestID = window.requestAnimationFrame(this._animate.bind(this));
 			}
-		});
+			});
 	</script>
 </dom-module>

@@ -26,6 +26,14 @@
         {% else %}
         oTree.debug = false;
         {% endif %}
+
+        // Bubbles Payoff Function Features
+        oTree.payoff_function = "{{ player.payoff_function }}";
+        oTree.payoff_var_a = "{{ player.payoff_var_a }}";
+        oTree.payoff_var_b = "{{ player.payoff_var_b }}";
+        oTree.payoff_var_c = "{{ player.payoff_var_c }}";
+
+
    })();
  </script>
 

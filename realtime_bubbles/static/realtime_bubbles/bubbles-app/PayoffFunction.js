@@ -3,13 +3,13 @@ var PayoffFunction = PayoffFunction || {};
   // PAYOFF FUNCTION TOWN
 
   // vcm parameters
-  const mpcr = 0.3;
-  const endow = 100;
+  const mpcr = 0.5;//oTree.payoff_var_a;
+  const endow = oTree.payoff_var_b;
 
   // wl
-  const wl_a = 20
-  const wl_b = 10
-  const wl_c = 60
+  const wl_a = oTree.payoff_var_a;
+  const wl_b = oTree.payoff_var_b;
+  const wl_c = oTree.payoff_var_c;
 
   function compute(group, func) {
   	/* Group is a dictionary mapping players by participant code to their decision and payoff.
@@ -33,12 +33,12 @@ var PayoffFunction = PayoffFunction || {};
       // calc total group contribution
       let totalcontrib = 0;
       for (let key in group) {
-          totalcontrib = totalcontrib + group[key].x;
+          totalcontrib = totalcontrib + (endow * group[key].x);
       }
 
       // calc individual payoffs
       for (let key in group) {
-        group[key].payoff = (endow) - (endow * group[key].x) + (mpcr * totalcontrib);
+        group[key].payoff = endow - (endow * group[key].x) + (mpcr * totalcontrib);
       }
   	} else if (func == 'wl'){
       // find the weakest link

@@ -25,11 +25,11 @@ var BubblesCanvas = BubblesCanvas || {};
 	  minPayoff = 0;
 	  maxPayoff = -Infinity;
 	  for (let key in group) {
-	  	minPayoff = Math.min(group[key].payoff, minPayoff);
 	  	maxPayoff = Math.max(group[key].payoff, maxPayoff);
 	  }
 	  maxPayoff = maxPayoff * 1.05;
 	  maxPayoff = Math.round(maxPayoff*10)/10;//round up to nearest 10
+	  // maxPayoff = 110;
 
 	  // add grid lines to plot
 	  let gridrange = (maxPayoff - minPayoff) / 5;

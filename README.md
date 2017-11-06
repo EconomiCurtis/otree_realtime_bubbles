@@ -20,7 +20,7 @@ Verticle Axis:
 
 Any arbitrary payoff function that takes as input one variable per user 
 
-Realtime
+## Realtime
 
 ### Also
 

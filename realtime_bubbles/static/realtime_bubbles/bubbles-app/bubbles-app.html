@@ -35,13 +35,13 @@
 
     <redwood-decision
         my-decision="{{ _computeMyDecisionObject(myX) }}"
-				group-decisions="{{ groupDecisions }}"
+		group-decisions="{{ groupDecisions }}"
         max-per-second="10">
     </redwood-decision>
 
     <div class="layout vertical">
     	<div id="period-running-indicator" class$="period-running-{{ isPeriodRunning }}"></div>
-	    <bubbles-selector value="{{ myX }}" group-decisions="[[ groupDecisions ]]"></bubbles-selector>
+	    <bubbles-selector value="{{ myX }}" group-decisions="{{ groupDecisions }}"></bubbles-selector>
 	    <payoff-graph></payoff-graph>
 	  </div>
 
@@ -74,12 +74,23 @@
 					id: oTree.idInGroup,
 					x: myX,
 				};
-				let payoffs = PayoffFunction.compute(this.groupDecisions, 'wl');
+				let payoffs = PayoffFunction.compute(this.groupDecisions, oTree.payoff_function);
 				return {
 					id: oTree.idInGroup,
 					x: myX,
 					payoff: this.groupDecisions[oTree.participantCode].payoff,
 				};
+			},
+			_updateGroupDecisionObject(myX) {
+				if (!this.groupDecisions) {
+					return;
+				}
+				this.groupDecisions[oTree.participantCode] = {
+					id: oTree.idInGroup,
+					x: myX,
+				};
+				let updatedGroupDecisions = PayoffFunction.compute(this.groupDecisions, oTree.payoff_function );
+				return {updatedGroupDecisions};
 			},
 		});
 	</script>
