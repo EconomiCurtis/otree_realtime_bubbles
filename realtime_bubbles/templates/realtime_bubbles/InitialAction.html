@@ -14,102 +14,53 @@
 {% endblock %}
 
 {% block scripts %}
-
+<link rel="stylesheet" href="/static/realtime_bubbles/bubbles-selector/range.css">
 {% endblock%}
 
 
 
 {% block content %}
 
-<table class="tg">
+<div class="panel panel-default">
+    <div class="panel-heading">
+    <table class="tg">
+        
 
+        <tr>
+            <p>Select your initial position from the slider below</p>
+        </tr>
 
-    {% if DEBUG %}
-    <tr>
-        <h3> Degub Mode</h3>
-        <div id="periodStart" style="background-color:red;width:990px;height:30px;margin-left:20px;margin-bottom:20px;">
-            <h4>Time remaining: <font color="red"><div style="display: inline" id="countdown"></div></font>
-        </div>
-    </tr>
-    {% endif %}
-
-
-     <tr>
-        <td class="tg-031e" colspan="12" width="1000px">
-        <h3>
-            Current Payoff: <span name="current points" id="id_currPoints">...</span>
-        </h3>
-    </td>
-    </tr>
-
-
-	 <tr>
-	 	<td class="tg-031e" colspan="12" width="1000px">
-    		<div id="container2">
-        	<body onload="draw();">
-           		<canvas class="canvas" id="canvas" width="1000px" height="400px"></canvas>
-    		</body>
-    		</td>
-		</div> 
-	</tr>
-
-	<tr>
-	 	<td class="tg-031e" colspan="12" width="1000px">
-			<input name="otree_slider" type="range" min="0" max="1" value="{{ rand_init_val }}" class="slider_otree" 
-			id="myRange" step="0.005"
-			onchange="sliderChange(this.value);">
-			<span id="sliderText">  {{ rand_init_val|floatformat:"3" }} </span>   		</td>
-		</div> 
-	</tr>
-
-
-</table>
-
-
+        <tr>
+            <input
+                name="initial_action"
+                id="id_initial_action"
+                class='not-clicked'
+                type="range"
+                min="0"
+                max="1"
+                step="0.005">
+    	</tr>
+            <br>
+            <br>
+            <br>
+        <tr>
+            {% next_button %}
+        </tr>
+    </table>
+</div>
+</div>
 
 
 <script>
-//<!-- Countdown timer -->
-//<!-- and submit action selection -->
-    function countdown( elementName, minutes, seconds )
-    {
-        var element, endTime, hours, mins, msLeft, time;
+$('.not-clicked').click(function(e){
+  $(this).removeClass('not-clicked'); 
+});
 
-        function twoDigits( n )
-        {
-            return (n <= 9 ? "0" + n : n);
-        }
 
-        function updateTimer()
-        {
-            msLeft = endTime - (+new Date);
-            if ( msLeft < 1000 ) {
-                element.innerHTML = "0";
-                $('<input>').attr({
-                    type: 'hidden',
-                    name: 'user_text',
-                    value: 'Too Late'
-                }).appendTo('form');
-                $('<input>').attr({
-                    type: 'hidden',
-                    name: 'auto_submit',
-                    value: '1'
-                }).appendTo('form');
-                $('#form').submit();
-            } else {
-                time = new Date( msLeft );
-                hours = time.getUTCHours();
-                mins = time.getUTCMinutes();
-                element.innerHTML = (hours ? hours + ':' + twoDigits( mins ) : mins) + ':' + twoDigits( time.getUTCSeconds() );
-                setTimeout( updateTimer, time.getUTCMilliseconds() + 500 );
-            }
-        }
+$( ".form" ).submit(function( event ) {
+if (!SliderTouched){
+event.preventDefault();}
+});
+</script>
 
-        element = document.getElementById( elementName );
-        endTime = (+new Date) + 1000 * (60*minutes + seconds) + 500;
-        updateTimer();
-    }
-
-    
- </script>
 {% endblock %}

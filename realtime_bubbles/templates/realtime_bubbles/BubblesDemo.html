@@ -15,6 +15,9 @@
      */
     var oTree = oTree || {};
     (function() {
+
+        oTree.InitX ="{{ player.initial_action }}";
+
         oTree.group = {{ player.group.pk | json }};
         oTree.role = "{{ player.role }}";
         oTree.participantCode = "{{ player.participant.code }}";

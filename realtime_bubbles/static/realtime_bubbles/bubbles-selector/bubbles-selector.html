@@ -10,9 +10,9 @@
 		</style>
 
 		<canvas
-				id="canvas"
-				width$="[[ _width ]]px"
-				height$="[[ _height ]]px">
+			id="canvas"
+			width$="[[ _width ]]px"
+			height$="[[ _height ]]px">
 		</canvas>
 
 		<input
@@ -60,16 +60,16 @@
 				window.cancelAnimationFrame(this._requestID);
 			},
 			_inputValueChanged(event) {
-			  this.value = parseFloat(event.target.value);
+			  	this.value = parseFloat(event.target.value);
 			},
 			_parentValueChanged(newValue, oldValue) {
-			  this.$.input.value = newValue;
+				this.$.input.value = newValue;
 			},
 			_animate(timestamp) {
-				oTree.groupDecisions = PayoffFunction.compute(this.groupDecisions, oTree.payoff_function );
+				this.groupDecisions = PayoffFunction.compute(this.groupDecisions, oTree.payoff_function );
 				BubblesCanvas.draw(this.$.canvas.getContext('2d'), this.groupDecisions);
-			this._requestID = window.requestAnimationFrame(this._animate.bind(this));
+				this._requestID = window.requestAnimationFrame(this._animate.bind(this));
 			}
-			});
+		});
 	</script>
 </dom-module>

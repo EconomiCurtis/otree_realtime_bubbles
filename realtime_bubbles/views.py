@@ -15,6 +15,14 @@ class MyPage(Page):
             'DEBUG':settings.DEBUG
     	}
 
+class InitialAction(Page):
+    form_model = models.Player
+    form_fields = ['initial_action']
+
+    def error_message(self, values):
+        if values["initial_action"] == None:
+            return 'Please select an action from the slider before clicking next.'
+
 
 class BubblesDemo(Page):
     pass
@@ -80,6 +88,7 @@ def get_output_table(events):
 
 page_sequence = [
     #MyPage,
+    InitialAction,
     BubblesDemo,
     ResultsWaitPage,
     Results

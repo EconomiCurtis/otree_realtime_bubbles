@@ -67,7 +67,7 @@ class Player(BasePlayer):
 	def initial_decision(self):
 		return {
 			'id': self.id_in_group,
-			'x': None,
+			'x': self.initial_action,
 			'payoff': None,
 		}
 
@@ -87,5 +87,8 @@ class Player(BasePlayer):
 	payoff_var_c = models.FloatField(
 		doc = """Variable `c` in the payoff function""")
 
-
+	initial_action = models.FloatField(
+		min=0.0,
+		max=1.0,
+		doc = """subject's initial decision""")
 
