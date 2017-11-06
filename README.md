@@ -21,3 +21,10 @@ Verticle Axis:
 Any arbitrary payoff function that takes as input one variable per user 
 
 Realtime
+
+### Also
+
+Just in case I forget, from shell;
+
+- Activate the virutal environment `venv/Scripts/activate` .. `deactivate`
+- Run docker `docker-compose -f .docker-compose-....yml up`
