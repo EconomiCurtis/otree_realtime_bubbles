@@ -29,6 +29,7 @@ var BubblesCanvas = BubblesCanvas || {};
 	  	maxPayoff = Math.max(group[key].payoff, maxPayoff);
 	  }
 	  maxPayoff = maxPayoff * 1.05;
+	  maxPayoff = Math.round(maxPayoff*10)/10;//round up to nearest 10
 
 	  // add grid lines to plot
 	  let gridrange = (maxPayoff - minPayoff) / 5;
@@ -46,6 +47,7 @@ var BubblesCanvas = BubblesCanvas || {};
 		}
 
     player_locations(group);	
+
 	}
 
 	function hline_at(xlevel){
