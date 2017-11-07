@@ -27,8 +27,7 @@ var BubblesCanvas = BubblesCanvas || {};
 	  for (let key in group) {
 	  	maxPayoff = Math.max(group[key].payoff, maxPayoff);
 	  }
-	  maxPayoff = maxPayoff * 1.05;
-	  maxPayoff = Math.round(maxPayoff*10)/10;//round up to nearest 10
+	  maxPayoff = Math.ceil((maxPayoff / 20)) * 20;//round up to nearest 10
 	  // maxPayoff = 110;
 
 	  // add grid lines to plot
@@ -51,11 +50,12 @@ var BubblesCanvas = BubblesCanvas || {};
 	}
 
 	function hline_at(xlevel){
-	  ctx.strokeStyle = "#cccccc";
-	  ctx.beginPath();
-	  ctx.moveTo(0, height * xlevel);
+		ctx.strokeStyle = "#e8e8e8";
+	    ctx.setLineDash([0, 0]);
+		ctx.beginPath();
+		ctx.moveTo(0, height * xlevel);
 		ctx.lineTo(width, height * xlevel);
-	  ctx.stroke();
+		ctx.stroke();
 	}
 
 	function player_locations(group) {
@@ -102,15 +102,28 @@ var BubblesCanvas = BubblesCanvas || {};
 	    x = (mrg + ((width - 2*mrg)) * x); // y coord for p1
 	    y = mrg + (height - 2*mrg) * (1 - y); // x coord for p1
 
+	    //virtical line - indicating location
+	    ctx.strokeStyle = "#cccccc";
+	    ctx.setLineDash([5, 3]);/*dashes are 5px and spaces are 3px*/
+		ctx.beginPath();
+		ctx.moveTo(x, height-mrg);
+		ctx.lineTo(x, mrg);
+		ctx.stroke();
+
+		// circle
 	    ctx.strokeStyle = "#666666"; // 🤘
 	    ctx.setLineDash([0, 0]);
 	    ctx.beginPath();
 	    ctx.moveTo((x + 8), y);
 	    ctx.arc(x, y, 8, 0, Math.PI*2, true);  // eye
-	    ctx.fillStyle = 'rgba(65, 97, 255,0.8)';
+	    ctx.fillStyle = 'rgba(65, 97, 255, 0.5)';
 	    ctx.fill();
 	    ctx.stroke();
+
+
 		}
+
+
 
 	BubblesCanvas.draw = draw;
 })();
