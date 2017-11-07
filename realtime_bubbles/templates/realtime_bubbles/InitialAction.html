@@ -37,10 +37,10 @@
                 class='not-clicked'
                 type="range"
                 min="0"
-                max="1.01"
-                value="1.01"
+                max="1.00"
                 step="0.005">
                 {{ form.initial_action.errors }}
+            <h3 align="center"><label id="initial_action_text">...</label></h3>
     	</tr>
             <br>
             <br>
@@ -67,7 +67,10 @@ $("form").on("submit", function(){
     };
  })
 
-
+//slider text
+$("#id_initial_action").mousemove(function () {
+    $("#initial_action_text").text((($("#id_initial_action").val()*100)/100).toFixed(3))
+})
 
 
 </script>

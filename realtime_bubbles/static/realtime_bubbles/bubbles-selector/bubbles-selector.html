@@ -23,9 +23,11 @@
 			step="0.005"
 			disabled$="[[ disabled ]]"
 			on-change="_inputValueChanged">
-		<span>{{ value }}</span>
+		<h3 align="center"><span>{{ value }}</span></h3>
+
 
 	</template>
+		
 
 	<script src="BubblesCanvas.js"></script>
 	<script>
@@ -61,6 +63,7 @@
 			},
 			_inputValueChanged(event) {
 			  	this.value = parseFloat(event.target.value);
+			  	this.value = ((this.value*100)/100).toFixed(3)
 			},
 			_parentValueChanged(newValue, oldValue) {
 				this.$.input.value = newValue;
@@ -73,5 +76,10 @@
 			}
 
 		});
+		//slider text
+		$("#input").mousemove(function () {
+		    $("#initial_action_text").text((($("#input").val()*100)/100).toFixed(3))
+		})
+
 	</script>
 </dom-module>
