@@ -31,7 +31,7 @@
 
 	  <redwood-period
 	      running="{{ isPeriodRunning }}"
-	      on-period-start="myFunction(myX)"">	      
+	      on-period-start="_onPeriodStart">	      
 	  </redwood-period>
 
     <redwood-decision
@@ -41,7 +41,7 @@
     </redwood-decision>
 
     <div class="layout vertical">
-    	<div id="period-running-indicator" class$="period-running-{{ isPeriodRunning }}"></div>
+    	<div id="period-running-indicator" class$="period-running-[[ isPeriodRunning ]]"></div>
 	    <bubbles-selector value="{{ myX }}" group-decisions="[[ groupDecisions ]]"></bubbles-selector>
 	    <payoff-graph></payoff-graph>
 	  </div>
@@ -58,7 +58,9 @@
 				},
 				myX: {
 					type: Number,
-					value: oTree.InitX,
+					value: function() {
+						return oTree.initial_action;
+					},
 				},
 				groupDecisions: {
 					type: Object,
@@ -83,7 +85,7 @@
 					payoff: this.groupDecisions[oTree.participantCode].payoff,
 				};
 			},
-			myFunction(myX){
+			_onPeriodStart() {
 				BubblesCanvas.draw(this.$.canvas.getContext('2d'), this.groupDecisions);
 			},
 		});
