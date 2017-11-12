@@ -28,3 +28,8 @@ Just in case I forget, from shell;
 
 - Activate the virutal environment `venv/Scripts/activate` .. `deactivate`
 - Run docker `docker-compose -f .docker-compose-....yml up`
+
+Inspector tools:
+
+- In the inspecter console during the experiment:
+  - `document.querySelector('redwood-decision').groupDecisions` to get list of group decisions. 
