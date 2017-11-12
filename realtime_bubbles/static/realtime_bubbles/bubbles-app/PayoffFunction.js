@@ -3,7 +3,7 @@ var PayoffFunction = PayoffFunction || {};
   // PAYOFF FUNCTION TOWN
 
   // vcm parameters
-  const mpcr = 0.5;//oTree.payoff_var_a;
+  const mpcr = oTree.payoff_var_a;
   const endow = oTree.payoff_var_b;
 
   // wl

@@ -36,7 +36,7 @@
                 id="id_initial_action"
                 class='not-clicked'
                 type="range"
-                min="0"
+                min="0.0"
                 max="1.00"
                 step="0.005">
                 {{ form.initial_action.errors }}
@@ -62,7 +62,7 @@ $("form").on("submit", function(){
     var x;
     x = document.getElementById("id_initial_action").className;
     if (x == "not-clicked") {
-        alert("Please enter a value");
+        alert("Please enter a value between 0 and 1");
         return false;
     };
  })
