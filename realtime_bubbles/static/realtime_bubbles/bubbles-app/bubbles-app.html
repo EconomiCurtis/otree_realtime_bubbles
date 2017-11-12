@@ -29,10 +29,12 @@
 			}
 		</style>
 
-	  <redwood-period
-	      running="{{ isPeriodRunning }}"
-	      on-period-start="_computeMyDecisionObject(myX)">	      
-	  </redwood-period>
+	<redwood-period
+		running="{{ isPeriodRunning }}"
+		on-period-start="_initRound"
+		my-decision="{{ _computeMyDecisionObject(myX) }}"
+		>	      
+	</redwood-period>
 
     <redwood-decision
         my-decision="{{ _computeMyDecisionObject(myX) }}"
@@ -67,6 +69,24 @@
 					type: Boolean,
 				},
 			},
+			_initRound() {
+				if (!this.groupDecisions) {
+					return;
+				}
+				this.groupDecisions[oTree.participantCode] = {
+					id: oTree.idInGroup,
+					x: this.myX,
+				};
+
+				this.groupDecisions = PayoffFunction.compute(this.groupDecisions, oTree.payoff_function ); // update everyone else's payoffs whenchange in decision
+
+				return{
+					id: oTree.idInGroup,
+					x: this.myX,
+					payoff: this.groupDecisions[oTree.participantCode].payoff,
+				};
+
+			},
 			_computeMyDecisionObject(myX) {
 				if (!this.groupDecisions) {
 					return;
@@ -75,7 +95,7 @@
 					id: oTree.idInGroup,
 					x: myX,
 				};
-				let payoffs = PayoffFunction.compute(this.groupDecisions, oTree.payoff_function);
+				this.groupDecisions = PayoffFunction.compute(this.groupDecisions, oTree.payoff_function ); // update everyone else's payoffs whenchange in decision
 				
 				return {
 					id: oTree.idInGroup,
@@ -85,4 +105,22 @@
 			},
 		});
 	</script>
+
+<script>
+
+	// onces the period start message is sent:
+	document.querySelector('redwood-period').addEventListener('period-start', function(){
+
+	    //countdown( "countdown", 0, {{ player.round_lengths|json }} );
+
+	    document.querySelector('redwood-decision').groupDecisions[oTree.participantCode] = oTree.InitX;
+	    document.querySelector('redwood-decision').group_decisions = PayoffFunction.compute(oTree.group_decisions, oTree.payoff_function);
+	    
+	    // BubblesCanvas.draw(document.getElementById('canvas').getContext('2d'), oTree.groupDecisions); //draw
+
+
+	});
+
+</script>
+
 </dom-module>
