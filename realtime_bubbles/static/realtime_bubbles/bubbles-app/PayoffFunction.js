@@ -33,12 +33,12 @@ var PayoffFunction = PayoffFunction || {};
       // calc total group contribution
       let totalcontrib = 0;
       for (let key in group) {
-          totalcontrib = totalcontrib + (endow * group[key].x);
+          totalcontrib = totalcontrib + (endow * parseFloat(group[key].x));
       }
 
       // calc individual payoffs
       for (let key in group) {
-        group[key].payoff = endow - (endow * group[key].x) + (mpcr * totalcontrib);
+        group[key].payoff = endow - (endow * parseFloat(group[key].x)) + (mpcr * totalcontrib);
       }
   	} else if (func == 'wl'){
       // find the weakest link

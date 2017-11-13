@@ -24,9 +24,13 @@ Any arbitrary payoff function that takes as input one variable per user
 
 ### Also
 
+Installation
+- oTree http://otree.readthedocs.io/en/latest/install.html
+- otree-redwood http://otree-redwood.readthedocs.io/en/latest/getting_started.html
+
 Just in case I forget, from shell;
 
-- Activate the virutal environment `venv/Scripts/activate` .. `deactivate`
+- Activate the virutal environment `venv/Scripts/activate` .. `deactivate`. Sometimes `source venv/Scripts/activate`
 - Run docker `docker-compose -f .docker-compose-....yml up`
 
 Inspector tools:

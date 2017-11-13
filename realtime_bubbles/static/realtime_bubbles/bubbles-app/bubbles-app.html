@@ -59,9 +59,7 @@
 				},
 				myX: {
 					type: Number,
-					value: function() {
-						return oTree.initial_action;
-					},
+					value: oTree.initial_action,
 				},
 				groupDecisions: {
 					type: Object,
@@ -69,24 +67,6 @@
 				isPeriodRunning: {
 					type: Boolean,
 				},
-			},
-			_initRound() {
-				if (!this.groupDecisions) {
-					return;
-				}
-				this.groupDecisions[oTree.participantCode] = {
-					id: oTree.idInGroup,
-					x: this.myX,
-				};
-
-				this.groupDecisions = PayoffFunction.compute(this.groupDecisions, oTree.payoff_function ); // update everyone else's payoffs whenchange in decision
-
-				return{
-					id: oTree.idInGroup,
-					x: this.myX,
-					payoff: this.groupDecisions[oTree.participantCode].payoff,
-				};
-
 			},
 			_computeMyDecisionObject(myX) {
 				if (!this.groupDecisions) {
@@ -105,26 +85,32 @@
 				};
 			},
 			_onPeriodStart() {
-				BubblesCanvas.draw(this.$.canvas.getContext('2d'), this.groupDecisions);
+				this.groupDecisions[oTree.participantCode] = {
+					id: oTree.idInGroup,
+					x: oTree.initial_action,
+				};
+				this.groupDecisions = PayoffFunction.compute(this.groupDecisions, oTree.payoff_function ); // update everyone else's payoffs whenchange in decision
 			},
 		});
 	</script>
 
-<script>
+<!-- <script>
 
 	// onces the period start message is sent:
 	document.querySelector('redwood-period').addEventListener('period-start', function(){
 
 	    //countdown( "countdown", 0, {{ player.round_lengths|json }} );
 
-	    document.querySelector('redwood-decision').groupDecisions[oTree.participantCode] = oTree.InitX;
-	    document.querySelector('redwood-decision').group_decisions = PayoffFunction.compute(oTree.group_decisions, oTree.payoff_function);
+	    document.querySelector('redwood-decision').groupDecisions[oTree.participantCode] = oTree.initial_action;
+	    document.querySelector('redwood-decision').group_decisions = PayoffFunction.compute(
+	    	document.querySelector('redwood-decision').groupDecisions, 
+	    	oTree.payoff_function);
 	    
 	    // BubblesCanvas.draw(document.getElementById('canvas').getContext('2d'), oTree.groupDecisions); //draw
 
 
 	});
 
-</script>
+</script> -->
 
 </dom-module>
