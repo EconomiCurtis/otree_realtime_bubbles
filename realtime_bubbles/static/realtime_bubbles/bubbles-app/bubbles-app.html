@@ -67,6 +67,12 @@
 				isPeriodRunning: {
 					type: Boolean,
 				},
+				initialActions: {
+					type: Object,
+				}
+			},
+			ready() {
+				console.log(this.initialActions);
 			},
 			_computeMyDecisionObject(myX) {
 				if (!this.groupDecisions) {

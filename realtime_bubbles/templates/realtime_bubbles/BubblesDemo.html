@@ -48,6 +48,8 @@
 
 {% block content %}
 
-<bubbles-app></bubbles-app>
+<bubbles-app
+    initial-actions='{{ player.group.initial_actions | json | safe }}'>
+</bubbles-app>
 <br><br><br>
 {% endblock %}

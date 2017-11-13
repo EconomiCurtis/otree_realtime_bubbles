@@ -57,6 +57,12 @@ class Group(DecisionGroup):
 	def period_length(self):
 		return None
 
+	def initial_actions(self):
+		return {
+			player.participant.code: player.initial_decision()
+			for player in self.get_players()
+		}
+
     # def period_length(self):
     #     return parse_config(self.session.config['config_file'])[self.round_number-1]['period_length']
 

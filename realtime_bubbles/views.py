@@ -24,6 +24,10 @@ class InitialAction(Page):
             return 'Please select an action from the slider before clicking next.'
 
 
+class InitialActionWaitPage(WaitPage):
+    pass
+
+
 class BubblesDemo(Page):
     pass
     
@@ -89,6 +93,7 @@ def get_output_table(events):
 page_sequence = [
     #MyPage,
     InitialAction,
+    InitialActionWaitPage,
     BubblesDemo,
     ResultsWaitPage,
     Results
