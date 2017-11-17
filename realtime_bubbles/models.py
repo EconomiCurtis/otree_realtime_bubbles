@@ -69,7 +69,7 @@ class Group(RedwoodGroup):
         for player in self.get_players():
             self.group_decisions[player.participant.code] = {
                 'id': player.id_in_group,
-                'x': player.initial_decision(),
+                'x': player.initial_action,
                 'payoff': 0,
             }
         self.save()
@@ -93,13 +93,6 @@ class Group(RedwoodGroup):
 
 class Player(BasePlayer):
     
-
-    def initial_decision(self):
-        return {
-            'id': self.id_in_group,
-            'x': self.initial_action,
-            'payoff': 12,
-        }
 
     round_lengths = models.PositiveIntegerField(
         doc="""The length of the round timer."""
