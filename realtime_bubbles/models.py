@@ -67,7 +67,11 @@ class Group(RedwoodGroup):
         """
         self.group_decisions = {}
         for player in self.get_players():
-            self.group_decisions[player.participant.code] = player.initial_decision()
+            self.group_decisions[player.participant.code] = {
+                'id': player.id_in_group,
+                'x': player.initial_decision(),
+                'payoff': 0,
+            }
         self.save()
 
     def _on_decisions_event(self, event=None, **kwargs):
