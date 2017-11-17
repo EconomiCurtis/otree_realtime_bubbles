@@ -56,26 +56,28 @@
 			attached() {
 				this._width = this.clientWidth;
 				this._height = this.clientHeight;
-		    	this._requestID = window.requestAnimationFrame(this._animate.bind(this));
+		    	this._requestID = window.requestAnimationFrame(
+		    		this._animate.bind(this));
 			},
 			detached() {
 				window.cancelAnimationFrame(this._requestID);
 			},
 			_inputValueChanged(event) {
 			  	this.value = parseFloat(event.target.value);
-			  	this.value = ((this.value*100)/100).toFixed(3) // round val to 3 digits
+			  	// round val to 3 digits
+			  	this.value = ((this.value*100)/100).toFixed(3);
 			},
 			_parentValueChanged(newValue, oldValue) {
 				this.$.input.value = newValue;
-
 			},
 			_animate(timestamp) {
+				//draw
+				BubblesCanvas.draw(
+					this.$.canvas.getContext('2d'),
+					this.groupDecisions);
 
-				this.groupDecisions = PayoffFunction.compute(this.groupDecisions, oTree.payoff_function ); // update everyone else's payoffs whenchange in decision
-				
-				BubblesCanvas.draw(this.$.canvas.getContext('2d'), this.groupDecisions); //draw
-
-				this._requestID = window.requestAnimationFrame(this._animate.bind(this));
+				this._requestID = window.requestAnimationFrame(
+					this._animate.bind(this));
 			}
 
 		});
