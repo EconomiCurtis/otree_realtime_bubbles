@@ -44,7 +44,7 @@ var PayoffFunction = PayoffFunction || {};
       // find the weakest link
       let min_effort = 1.0;
       for (let key in group) {
-        min_effort = Math.min(group[key].x, min_effort);
+        min_effort = Math.min(parseFloat(group[key].x), min_effort);
       }
 
       // calc individual payoffs

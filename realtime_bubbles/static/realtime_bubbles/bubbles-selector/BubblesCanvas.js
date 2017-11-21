@@ -9,6 +9,8 @@ var BubblesCanvas = BubblesCanvas || {};
 	let height;
 	let minPayoff;
 	let maxPayoff;
+	let ymax;
+	let ymin;
 	const mrg = 10;
 
 	function draw(context, group) {
@@ -16,47 +18,86 @@ var BubblesCanvas = BubblesCanvas || {};
 		width = ctx.canvas.width;
 		height = ctx.canvas.height;
 
-	  // background
-	  ctx.fillStyle = 'black';
-	  ctx.fillRect(0, 0, width, height);
-	  ctx.clearRect(mrg, mrg,(width - 2*mrg), (height - 2*mrg));
+		// background
+		ctx.fillStyle = 'black';
+		ctx.fillRect(0, 0, width, height);
+		ctx.clearRect(mrg, mrg,(width - 2*mrg), (height - 2*mrg));
 
-	  //scale plot area
-	  minPayoff = 0;
-	  maxPayoff = -Infinity;
-	  for (let key in group) {
-	  	maxPayoff = Math.max(group[key].payoff, maxPayoff);
-	  }
-	  maxPayoff = Math.ceil((maxPayoff / 20)) * 20;//round up to nearest 10
-	  // maxPayoff = 110;
+		//scale plot area
+		minPayoff = 0;
+		maxPayoff = 0;
+		for (let key in group) {
+			maxPayoff = Math.max(group[key].payoff, maxPayoff);
+			minPayoff = Math.min(minPayoff, group[key].payoff)
+		}
+		maxPayoff = Math.ceil((1.1 * maxPayoff / 20)) * 20;//round up to nearest ...
+		minPayoff = Math.ceil(((-1.1 * minPayoff) / 20)) * 20;//round up to nearest ...
+		minPayoff = -1 * minPayoff;
+		ymin = minPayoff;
+		ymax = maxPayoff + 2;
 
-	  // add grid lines to plot
-	  let gridrange = (maxPayoff - minPayoff) / 5;
-	  gridrange = gridrange / 5;
-	  gridrange = Math.floor(gridrange);  
-	  gridrange = gridrange * 5;
+		// add grid lines to plot
+		// base grid lines on range
+		gridrange = ymax - ymin;
+		gridrange = gridrange / 5;  
+		gridrange = gridrange.toFixed(0);
 
-	  for (var i = 1; i < 6; i++){
-	  	const xlevel = ((maxPayoff - (i * gridrange)) / maxPayoff);
-			hline_at(xlevel);
 
-		  ctx.font = "18px Ariel";
+		// console.log("minGrid: " + minGrid + " gridrange: " + gridrange);
+
+		let ylevel = 0;
+		let logger = ""
+		for (var i = 0; i < 6; i++){
+
+			ylevel = (i * gridrange + ymin); // ensure min grid is round number
+	    	ylevel_text = ylevel;
+	    	logger = logger + ", " + ylevel;
+
+
+		 	ctx.font = "18px Ariel";
 			ctx.fillStyle = "#cccccc";
-			ctx.fillText((i * gridrange), 20, xlevel * height - 2);
+			ctx.fillText(ylevel_text, 20, mrg + (height - 2*mrg) * (1 - val_to_y(ylevel)));
+
+			hline_at(val_to_y(ylevel));
+
+
 		}
 
-    player_locations(group);	
+		ctx.font = "18px Ariel";
+		ctx.setLineDash([5, 15, 25]);
+		ctx.fillStyle = "#cccccc";
+		ctx.fillText("", 20, mrg + (height - 2*mrg) * (1 - val_to_y(0)));
+		hline_at(val_to_y(0));
 
-	}
+		console.log("" + logger);
 
-	function hline_at(xlevel){
+		// plot player positions on x, y
+		player_locations(group);	
+
+
+
+	};
+
+	function val_to_y(val){
+		// requires correct ymin and ymax
+
+		y = (val - ymin) / (ymax - ymin);
+		return y;
+
+
+	};
+
+	function hline_at(ylevel){
+	    
+	    ylevel = mrg + (height - 2*mrg) * (1 - ylevel); // x coord for p1
+
 		ctx.strokeStyle = "#e8e8e8";
 	    ctx.setLineDash([0, 0]);
 		ctx.beginPath();
-		ctx.moveTo(0, height * xlevel);
-		ctx.lineTo(width, height * xlevel);
+		ctx.moveTo(0,  ylevel);
+		ctx.lineTo(width, ylevel);
 		ctx.stroke();
-	}
+	};
 
 	function player_locations(group) {
 		for (let key in group) {
@@ -64,14 +105,14 @@ var BubblesCanvas = BubblesCanvas || {};
 			if (group[key].id == oTree.idInGroup){
 				ownDot(
 					group[key].x,
-					(group[key].payoff - minPayoff) / (maxPayoff - minPayoff),
+					val_to_y(group[key].payoff),
 					mrg,
 					group[key].id
 				);
 			} else {
 				playerDot(
 					group[key].x,
-					(group[key].payoff - minPayoff) / (maxPayoff - minPayoff),
+					val_to_y(group[key].payoff),
 					mrg,
 					group[key].id
 				);
@@ -85,6 +126,7 @@ var BubblesCanvas = BubblesCanvas || {};
 	}
 
 	function playerDot(x, y, mrg, player_id) {
+
 	    x = (mrg + ((width - 2*mrg)) * x); // y coord for p1
 	    y = mrg + (height - 2*mrg) * (1 - y); // x coord for p1
 
@@ -99,6 +141,10 @@ var BubblesCanvas = BubblesCanvas || {};
 	}
 
 	function ownDot(x, y, mrg, player_id) {
+
+
+
+
 	    x = (mrg + ((width - 2*mrg)) * x); // y coord for p1
 	    y = mrg + (height - 2*mrg) * (1 - y); // x coord for p1
 
@@ -119,6 +165,9 @@ var BubblesCanvas = BubblesCanvas || {};
 	    ctx.fillStyle = 'rgba(65, 97, 255, 0.5)';
 	    ctx.fill();
 	    ctx.stroke();
+
+
+
 
 
 		}

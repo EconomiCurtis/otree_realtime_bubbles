@@ -36,6 +36,9 @@
 
     <redwood-decision
         my-decision="{{ myX }}"
+        
+        
+        
         initial-decision="[[ initialX ]]"
 		group-decisions="{{ groupDecisions }}"
         max-per-second="10">
@@ -78,6 +81,22 @@
 				isPeriodRunning: {
 					type: Boolean,
 				}
+			},
+			_computeMyDecisionObject(myX) {
+				if (!this.groupDecisions) {
+					return;
+				}
+				this.groupDecisions[oTree.participantCode] = {
+					id: oTree.idInGroup,
+					x: myX,
+				};
+				this.groupDecisions = PayoffFunction.compute(this.groupDecisions, oTree.payoff_function ); // update everyone else's payoffs whenchange in decision
+				
+				return {
+					id: oTree.idInGroup,
+					x: myX,
+					payoff: this.groupDecisions[oTree.participantCode].payoff,
+				};
 			},
 		});
 	</script>

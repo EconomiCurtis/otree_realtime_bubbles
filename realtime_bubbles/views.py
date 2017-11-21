@@ -63,7 +63,7 @@ def get_output_table(events):
     tick = 0
     participant_dict = {}
     for event in events:
-        if event.channel == 'group_decisions':
+        if event.channel == 'group_decisions' or event.channel == 'state':
 
             # if participant_dict[event.participant] == None:
             #     participant_dict[event.participant] = []

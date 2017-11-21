@@ -135,7 +135,14 @@ SESSION_CONFIGS = [
         'display_name': "Bubbles UI - Realtime",
         'num_demo_participants': 3,
         'app_sequence': ['realtime_bubbles', 'payment_info'],
-        'players_per_group': 3
+        'players_per_group': 3,
+
+        'round_length':[30,30,30,30,30],
+
+        'round_payoff_function':['wl','wl','foo','vcm','vcm',], # see PayoffFunction.js
+        'round_payoff_var_a':   [ 20,  20,  20. , 0.3,  0.3 ,],
+        'round_payoff_var_b':   [ 10,  10,  100 , 100,  10. ,],
+        'round_payoff_var_c':   [ 60,  60,  None, None, 60. ,],
     },
 ]
 
