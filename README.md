@@ -22,11 +22,21 @@ Any arbitrary payoff function that takes as input one variable per user
 
 ## Realtime
 
-### Also
+### Also Curtis Notes
 
 Installation
 - oTree http://otree.readthedocs.io/en/latest/install.html
 - otree-redwood http://otree-redwood.readthedocs.io/en/latest/getting_started.html
+
+#### Install on your mac
+
+- Clone repo
+- navigate in
+- setup virtual environment `virtualenv venv` `source venv/bin/activate`
+- setup `pip3 install -r requirements.txt`
+ - You have needed to install jsonfield manually, since there might be a [package bug](https://stackoverflow.com/questions/11015692/pip-fails-to-install-packages-from-requirements-txt). 
+ - You may need to install `pip install -U git+git://github.com/oTree-org/otree-core.git#egg=otree-core`, and `pip install -U otree-core` mannually. And you may have to do this in a particular order, installing the latest version of otree-core after otree-redwood. 
+
 
 Just in case I forget, from shell;
 

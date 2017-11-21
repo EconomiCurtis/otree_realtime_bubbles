@@ -38,6 +38,7 @@
                 type="range"
                 min="0.0"
                 max="1.00"
+                value='none'
                 step="0.005">
                 {{ form.initial_action.errors }}
             <h3 align="center"><label id="initial_action_text">...</label></h3>
@@ -67,10 +68,20 @@ $("form").on("submit", function(){
     };
  })
 
+function round(value, precision) {
+    var multiplier = Math.pow(10, precision || 0);
+    return Math.round(value * multiplier) / multiplier;
+}
+
 //slider text
-$("#id_initial_action").mousemove(function () {
-    $("#initial_action_text").text((($("#id_initial_action").val()*100)/100).toFixed(3))
-})
+document.getElementById('id_initial_action').addEventListener('change', function(e) {
+    var valueSeeked = e.target.value;
+    valueSeeked = round(valueSeeked, 3).toFixed(3)
+    document.getElementById('initial_action_text').innerHTML = valueSeeked;
+});
+// $("#id_initial_action").mousemove(function () {
+//     $("#initial_action_text").text((($("#id_initial_action").val()*100)/100).toFixed(3))
+// })
 
 
 </script>

@@ -32,7 +32,8 @@
 
 	  <redwood-period
 	      running="{{ isPeriodRunning }}"
-	      on-period-start="_onPeriodStart">	      
+	      on-period-start="_onPeriodStart"
+		  group-decisions="{{ groupDecisions }}">	      
 	  </redwood-period>
 
     <redwood-decision
@@ -73,6 +74,10 @@
 			},
 			ready() {
 				console.log(this.initialActions);
+				
+				this.groupDecisions = PayoffFunction.compute(this.initialActions, oTree.payoff_function ); // update everyone else's payoffs whenchange in decision
+				console.log(this.initialActions);
+
 			},
 			_computeMyDecisionObject(myX) {
 				if (!this.groupDecisions) {
@@ -91,32 +96,15 @@
 				};
 			},
 			_onPeriodStart() {
-				this.groupDecisions[oTree.participantCode] = {
-					id: oTree.idInGroup,
-					x: oTree.initial_action,
-				};
-				this.groupDecisions = PayoffFunction.compute(this.groupDecisions, oTree.payoff_function ); // update everyone else's payoffs whenchange in decision
+				// console.log("this.groupDecisions");
+				// console.log(this.groupDecisions);
+				// this.groupDecisions = this.initialActions;
+				return this.groupDecisions;
+
 			},
 		});
 	</script>
 
-<!-- <script>
 
-	// onces the period start message is sent:
-	document.querySelector('redwood-period').addEventListener('period-start', function(){
-
-	    //countdown( "countdown", 0, {{ player.round_lengths|json }} );
-
-	    document.querySelector('redwood-decision').groupDecisions[oTree.participantCode] = oTree.initial_action;
-	    document.querySelector('redwood-decision').group_decisions = PayoffFunction.compute(
-	    	document.querySelector('redwood-decision').groupDecisions, 
-	    	oTree.payoff_function);
-	    
-	    // BubblesCanvas.draw(document.getElementById('canvas').getContext('2d'), oTree.groupDecisions); //draw
-
-
-	});
-
-</script> -->
 
 </dom-module>

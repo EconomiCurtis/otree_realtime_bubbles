@@ -25,7 +25,8 @@ class InitialAction(Page):
 
 
 class InitialActionWaitPage(WaitPage):
-    pass
+    title_text = "The Round Will Start Soon"
+    body_text = "The round will start the moment all players made their initial selection. "
 
 
 class BubblesDemo(Page):
@@ -39,7 +40,11 @@ class ResultsWaitPage(WaitPage):
 
 
 class Results(Page):
-    pass
+    def vars_for_template(self):
+        self.player.set_round_score()
+        return {
+            'test':self.player.set_round_score()
+        }
 
 
 def get_output_table(events):
@@ -63,7 +68,7 @@ def get_output_table(events):
     tick = 0
     participant_dict = {}
     for event in events:
-        if event.channel == 'group_decisions':
+        if event.channel == 'group_decisions' or event.channel == 'state':
 
             # if participant_dict[event.participant] == None:
             #     participant_dict[event.participant] = []

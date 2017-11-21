@@ -135,8 +135,16 @@ SESSION_CONFIGS = [
         'display_name': "Bubbles UI - Realtime",
         'num_demo_participants': 3,
         'app_sequence': ['realtime_bubbles', 'payment_info'],
-        'players_per_group': 3
+        'players_per_group': 3,
+
+        'round_length':[30,30,30,30,30],
+
+        'round_payoff_function':['vcm','vcm','wl','wl','foo'], # see PayoffFunction.js
+        'round_payoff_var_a':   [ 0.3,  0.3,  20,  20,  20],
+        'round_payoff_var_b':   [ 100,  100,  10,  10,  10],
+        'round_payoff_var_c':   [ None, None, 60,  60,  60],
     },
+
 ]
 
 # anything you put after the below line will override

@@ -57,6 +57,7 @@
 				this._width = this.clientWidth;
 				this._height = this.clientHeight;
 		    	this._requestID = window.requestAnimationFrame(this._animate.bind(this));
+		    	this.groupDecisions = PayoffFunction.compute(this.groupDecisions, oTree.payoff_function ); // update everyone else's payoffs 
 			},
 			detached() {
 				window.cancelAnimationFrame(this._requestID);
