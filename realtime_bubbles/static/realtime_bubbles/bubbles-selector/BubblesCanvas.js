@@ -69,8 +69,6 @@ var BubblesCanvas = BubblesCanvas || {};
 		ctx.fillText("", 20, mrg + (height - 2*mrg) * (1 - val_to_y(0)));
 		hline_at(val_to_y(0));
 
-		console.log("" + logger);
-
 		// plot player positions on x, y
 		player_locations(group);	
 
@@ -135,7 +133,7 @@ var BubblesCanvas = BubblesCanvas || {};
 	    ctx.beginPath();
 	    ctx.moveTo((x + 7), y);
 	    ctx.arc(x, y, 7, 0, Math.PI*2, true);  // eye
-	    ctx.fillStyle = color_concat_rgba(player_id, 0.3);
+	    ctx.fillStyle = color_concat_rgba(player_id, 0.6);
 	    ctx.fill();
 	    ctx.stroke();
 	}

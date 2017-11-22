@@ -39,7 +39,13 @@ class ResultsWaitPage(WaitPage):
 
 
 class Results(Page):
-    pass
+
+    def vars_for_template(self):
+
+        return{
+            'round_payoff':self.player.set_round_score(),
+            'DEBUG':settings.DEBUG
+        }
 
 
 def get_output_table(events):

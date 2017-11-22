@@ -12,7 +12,9 @@
 		<canvas
 			id="canvas"
 			width$="[[ _width ]]px"
-			height$="[[ _height ]]px">
+			height$="[[ _height ]]px"
+			on-click="handleClick"
+			>
 		</canvas>
 
 		<input
@@ -34,24 +36,51 @@
 		Polymer({
 			// Create bubbles-selector object class:
 			is: 'bubbles-selector',
+
 			properties: {
-	    	value: {
-		        type: Number,
-		    	notify: true,
-		        observer: '_parentValueChanged',
-	    	},
-			groupDecisions: {
-				type: Object,
+		    	value: {
+			        type: Number,
+			    	notify: true,
+			        observer: '_parentValueChanged',
+		    	},
+				groupDecisions: {
+					type: Object,
+				},
+		    	disabled: {
+		    		type: Boolean,
+		    	},
+				_width: {
+					type: Number,
+				},
+				_height: {
+					type: Number,
+				},
 			},
-	    	disabled: {
-	    		type: Boolean,
-	    	},
-			_width: {
-				type: Number,
-			},
-			_height: {
-				type: Number,
-			},
+
+			handleClick(event) {
+				var rect = this.$.canvas.getBoundingClientRect();
+				const mousePos = {
+					x: (event.clientX - rect.left),
+					y: (event.clientY - rect.top)
+				};
+
+				x = mousePos.x;
+
+				if (x > (this.clientWidth - 10)){
+					x = 1.0
+				} else if (x > 10){
+					x = (x - 10) / (this.clientWidth - 20) // (x - {dot radius}) / (...)
+					document.getElementById('input').value = x;
+				} else {
+					x = null
+				};
+
+				this.value = parseFloat(x);
+			  	// round val to 3 digits
+			  	this.value = ((x*100)/100).toFixed(3);
+
+				console.log('Ow! x:' + mousePos.x + " y:" + mousePos.y + " ... " );
+
 			},
 			attached() {
 				this._width = this.clientWidth;
@@ -84,7 +113,11 @@
 		//slider text
 		$("#input").mousemove(function () {
 		    $("#initial_action_text").text((($("#input").val()*100)/100).toFixed(3))
-		})
+		});
+
+
+
+
 
 	</script>
 </dom-module>
