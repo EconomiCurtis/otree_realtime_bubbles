@@ -3,9 +3,12 @@ from otree.api import (
     Currency as c, currency_range
 )
 
+from django.contrib.contenttypes.models import ContentType
 from jsonfield import JSONField
 from otree_redwood.models import Event, Group as RedwoodGroup
 import random
+
+
 
 import logging
 logging.basicConfig(level=logging.INFO)
@@ -28,8 +31,8 @@ class Constants(BaseConstants):
     round_length = [200,200,200,200,200]
     round_payoff_functions = ['vcm','vcm','wl','wl','foo']
 
-    round_var_a =   [0.3, 0.3,    20,20,20]
-    round_var_b =   [100, 100,    10,10,10]
+    round_var_a =   [100, 100,    20,20,20]
+    round_var_b =   [ .3,  .3,    10,10,10]
     round_var_c =   [None, None,  60,60,60]
 
 
@@ -86,7 +89,7 @@ class Group(RedwoodGroup):
             for player in group:
                 totalcontrib = totalcontrib + (endow * group[player]['x'])
             for player in group:
-                group[player]['payoff'] = endow - (endow * group[player]['x'] + mpcr * totalcontrib)
+                group[player]['payoff'] = endow - (endow * group[player]['x']) + (mpcr * totalcontrib)
             
         if function_name == 'wl':
             wl_a = v1
@@ -178,7 +181,7 @@ class Player(BasePlayer):
  
     def set_round_score(self):
         decisions = list(Event.objects.filter(
-                channel='decisions',
+                channel='group_decisions',
                 content_type=ContentType.objects.get_for_model(self.group),
                 group_pk=self.group.pk).order_by("timestamp"))
 
@@ -197,24 +200,39 @@ class Player(BasePlayer):
         except Event.DoesNotExist:
             return float('nan')
 
-        period_duration = period_end.timestamp - period_start.timestamp
+        # use decisions[0].timestamp for period start just in case period_start.timestamp slightly deviates (it will)
+        period_duration = period_end.timestamp - decisions[0].timestamp
 
         payoff = 0
+        flow_payoffs = []
+        for i, d in enumerate(decisions):
 
-        # for i, d in enumerate(decisions):
+            # it's possible to send messages after the round has technically ended. 
+            # this handles that. 
+            if decisions[i].timestamp < period_end.timestamp:
+                TIME = decisions[i].timestamp
+                FLOW_PAYOFF = decisions[i].value[self.participant.code]['payoff'] # save for final period
 
-  #           flow_payoff = d.x
+                # from initial position to 2nd to final, calc flow payoffs and integral
+                if i != 0:
+                    t_diff = ((decisions[i].timestamp - decisions[i-1].timestamp) / period_duration)
+                    flow_payoff = decisions[i-1].value[self.participant.code]['payoff'] * t_diff
+                    flow_payoffs.append(flow_payoff)
+                    payoff = payoff + flow_payoff
 
-  #           if i + 1 < len(decisions):
-  #               next_change_time = decisions[i + 1].timestamp
-  #           else:
-  #               next_change_time = period_end.timestamp
-  #           payoff += (next_change_time - d.timestamp).total_seconds() * flow_payoff
+        # handle final action selection with period_end.timestamp
+        # use TIME and FLOW_PAYOFF just in case there are message seny after the round is over. 
+        t_diff = ((period_end.timestamp - TIME) / period_duration)
+        flow_payoff = FLOW_PAYOFF * t_diff
+        flow_payoffs.append(flow_payoff)
+        payoff = payoff + flow_payoff
 
-
-
-        self.payoff = payoff
+        self.round_score = payoff
 
         return {
-            decisions[0].value['payoff']
+            'participant_code':self.participant.code,
+            'period_duration_seconds':period_duration.seconds,
+            'payoff':payoff,
+            'flow_payoffs':flow_payoffs,
+
         }
