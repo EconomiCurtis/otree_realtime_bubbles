@@ -137,7 +137,7 @@ SESSION_CONFIGS = [
         'app_sequence': ['realtime_bubbles', 'payment_info'],
         'players_per_group': 3,
 
-        'round_length':[None,30,30,30,30],
+        'round_length':[30,30,30,30,30],
 
         'round_payoff_function':['wl','wl','foo','vcm','vcm',], # see PayoffFunction.js
         'round_payoff_var_a':   [ 20,  20,  20. , 100,  100 ,],

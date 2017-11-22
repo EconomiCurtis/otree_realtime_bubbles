@@ -58,6 +58,7 @@ def get_output_table(events):
         'round_number',
         'group_id',
         'tick',
+        'message',
         'x',
     ]
     if not events:
@@ -71,16 +72,6 @@ def get_output_table(events):
     for event in events:
         if event.channel == 'group_decisions' or event.channel == 'state':
 
-            # if participant_dict[event.participant] == None:
-            #     participant_dict[event.participant] = []
-            
-            # participant_dict[event.participant].push(event.value)
-
-
-
-
-
-
             rows.append([
                 event.timestamp,
                 group.session.code,
@@ -88,6 +79,7 @@ def get_output_table(events):
                 group.round_number  ,
                 group.id_in_subsession,
                 tick,
+                event.channel,
                 event.value,
             ])
             tick += 1
