@@ -2,6 +2,9 @@
 
 Realtime Bubbles is a template oTree app. It includes a `bubbles` user interface run in  `realtime`. 
 
+![I like big Bubbles, and I cannot lie](/_static/docs/gif_bubbles_ui.gif "I like big bubbles, and I cannot lie")
+
+
 ## Bubbles UI
 
 Bubbles UI refers to a display in which the x-axis shows users action selection and y-axis indicates current payoffs. 
