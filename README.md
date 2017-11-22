@@ -93,6 +93,7 @@ Just in case I forget, from shell;
 
 - Activate the virutal environment `venv/Scripts/activate` .. `deactivate`. Sometimes `source venv/Scripts/activate`
 - Run docker `docker-compose -f .docker-compose-....yml up`
+- You may also need to `xcode-select --install`
 
 Inspector tools:
 
