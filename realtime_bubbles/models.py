@@ -83,8 +83,8 @@ class Group(RedwoodGroup):
         #     group[player]['payoff'] = 12.5
 
         if function_name == 'vcm':
-            mpcr = v1
-            endow = v2
+            endow = v1
+            mpcr = v2
             totalcontrib = 0
             for player in group:
                 totalcontrib = totalcontrib + (endow * group[player]['x'])
@@ -138,7 +138,7 @@ class Group(RedwoodGroup):
         self.group_decisions[event.participant.code] = {
             'id': player.id_in_group,
             'x': float(event.value),
-            'payoff': 12
+            'payoff': 0
         }
         self.group_decisions = self.payoff_function(
             self.group_decisions, 
@@ -204,7 +204,7 @@ class Player(BasePlayer):
         period_duration = period_end.timestamp - decisions[0].timestamp
 
         payoff = 0
-        flow_payoffs = []
+        # flow_payoffs = []
         for i, d in enumerate(decisions):
 
             # it's possible to send messages after the round has technically ended. 
@@ -217,14 +217,14 @@ class Player(BasePlayer):
                 if i != 0:
                     t_diff = ((decisions[i].timestamp - decisions[i-1].timestamp) / period_duration)
                     flow_payoff = decisions[i-1].value[self.participant.code]['payoff'] * t_diff
-                    flow_payoffs.append(flow_payoff)
+                    # flow_payoffs.append(flow_payoff)
                     payoff = payoff + flow_payoff
 
         # handle final action selection with period_end.timestamp
         # use TIME and FLOW_PAYOFF just in case there are message seny after the round is over. 
         t_diff = ((period_end.timestamp - TIME) / period_duration)
         flow_payoff = FLOW_PAYOFF * t_diff
-        flow_payoffs.append(flow_payoff)
+        # flow_payoffs.append(flow_payoff)
         payoff = payoff + flow_payoff
 
         self.round_score = payoff
@@ -233,6 +233,6 @@ class Player(BasePlayer):
             'participant_code':self.participant.code,
             'period_duration_seconds':period_duration.seconds,
             'payoff':payoff,
-            'flow_payoffs':flow_payoffs,
+            # 'flow_payoffs':flow_payoffs,
 
         }
