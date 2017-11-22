@@ -56,7 +56,7 @@ var BubblesCanvas = BubblesCanvas || {};
 
 		 	ctx.font = "18px Ariel";
 			ctx.fillStyle = "#cccccc";
-			ctx.fillText(ylevel_text, 20, mrg + (height - 2*mrg) * (1 - val_to_y(ylevel)));
+			ctx.fillText(ylevel_text, 20, 2+ mrg + (height - 2*mrg) * (1 - val_to_y(ylevel)));
 
 			hline_at(val_to_y(ylevel));
 
