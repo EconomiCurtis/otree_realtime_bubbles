@@ -1,4 +1,9 @@
 -r requirements_base.txt
 # packages that are unnecessary on Windows/Mac local dev environments, or don't install properly
 psycopg2>=2.5.1
-jsonfield
+js2py
+Django==1.8.8
+pytz==2017.2
+autobahn==17.9.3
+attrs==17.2.0
+js

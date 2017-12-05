@@ -139,10 +139,11 @@ SESSION_CONFIGS = [
 
         'round_length':[30,30,30,30,30],
 
-        'round_payoff_function':['vcm','vcm','wl','wl','foo'], # see PayoffFunction.js
-        'round_payoff_var_a':   [ 0.3,  0.3,  20,  20,  20],
-        'round_payoff_var_b':   [ 100,  100,  10,  10,  10],
-        'round_payoff_var_c':   [ None, None, 60,  60,  60],
+        'round_payoff_function':['wl','wl','foo','vcm','vcm',], # see PayoffFunction.js
+        'round_payoff_var_a':   [ 20,  20,  20. , 100,  100 ,],
+        'round_payoff_var_b':   [ 10,  10,  100 , 0.3,  0.3,],
+        'round_payoff_var_c':   [ 60,  60,  None, None, 60. ,],
+
     },
 
 ]

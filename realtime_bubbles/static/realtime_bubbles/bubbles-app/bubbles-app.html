@@ -33,18 +33,28 @@
 	  <redwood-period
 	      running="{{ isPeriodRunning }}"
 	      on-period-start="_onPeriodStart"
-		  group-decisions="{{ groupDecisions }}">	      
+		    group-decisions="{{ groupDecisions }}">	      
 	  </redwood-period>
 
     <redwood-decision
-        my-decision="{{ _computeMyDecisionObject(myX) }}"
+        my-decision="{{ myX }}"
+        
+        
+        
+        initial-decision="[[ initialX ]]"
 		group-decisions="{{ groupDecisions }}"
         max-per-second="10">
     </redwood-decision>
 
     <div class="layout vertical">
-    	<div id="period-running-indicator" class$="period-running-[[ isPeriodRunning ]]"></div>
-	    <bubbles-selector value="{{ myX }}" group-decisions="[[ groupDecisions ]]"></bubbles-selector>
+    	<div
+    		id="period-running-indicator"
+    		class$="period-running-[[ isPeriodRunning ]]">
+    	</div>
+	    <bubbles-selector
+	    	value="{{ myX }}"
+	    	group-decisions="[[ groupDecisions ]]">
+	    </bubbles-selector>
 	    <payoff-graph></payoff-graph>
 	  </div>
 
@@ -58,26 +68,21 @@
 				myPlannedDecision: {
 					type: Number,
 				},
+				initialX: {
+					type: Number,
+					value: () => {
+						return oTree.initial_action;
+					}
+				},
 				myX: {
 					type: Number,
-					value: oTree.initial_action,
 				},
 				groupDecisions: {
 					type: Object,
 				},
 				isPeriodRunning: {
 					type: Boolean,
-				},
-				initialActions: {
-					type: Object,
 				}
-			},
-			ready() {
-				console.log(this.initialActions);
-				
-				this.groupDecisions = PayoffFunction.compute(this.initialActions, oTree.payoff_function ); // update everyone else's payoffs whenchange in decision
-				console.log(this.initialActions);
-
 			},
 			_computeMyDecisionObject(myX) {
 				if (!this.groupDecisions) {
@@ -94,13 +99,6 @@
 					x: myX,
 					payoff: this.groupDecisions[oTree.participantCode].payoff,
 				};
-			},
-			_onPeriodStart() {
-				// console.log("this.groupDecisions");
-				// console.log(this.groupDecisions);
-				// this.groupDecisions = this.initialActions;
-				return this.groupDecisions;
-
 			},
 		});
 	</script>

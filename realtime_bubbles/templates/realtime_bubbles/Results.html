@@ -2,12 +2,18 @@
 {% load staticfiles otree %}
 
 {% block title %}
-    Page title
+    Round summary. 
 {% endblock %}
 
 {% block content %}
 
 
+
+<div class="instructions well well-lg">
+    <p>
+		Your score this round was {{player.round_score|floatformat:"2"}}
+	</p>
+</div>
 
 
     {% next_button %}
