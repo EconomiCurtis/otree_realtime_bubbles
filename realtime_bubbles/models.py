@@ -47,8 +47,15 @@ def period_load(self, config_field):
     else:
         return Constants[config_field]
 
+		self.group_randomly()
+		group_matrix = []
+		for i in range(0, len(players), players_per_group):
+			group_matrix.append(players[i:i+players_per_group])
+		self.set_group_matrix(group_matrix)
+
 
 class Subsession(BaseSubsession):
+
 
     def before_session_starts(self):
 
@@ -71,7 +78,6 @@ class Subsession(BaseSubsession):
             p.payoff_var_b = period_load(self,'round_payoff_var_b')
             p.payoff_var_c = period_load(self,'round_payoff_var_c')
             p.payoff_function = period_load(self,'round_payoff_function')
-
 
 
 

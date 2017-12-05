@@ -143,7 +143,9 @@ SESSION_CONFIGS = [
         'round_payoff_var_a':   [ 20,  20,  20. , 100,  100 ,],
         'round_payoff_var_b':   [ 10,  10,  100 , 0.3,  0.3,],
         'round_payoff_var_c':   [ 60,  60,  None, None, 60. ,],
+
     },
+
 ]
 
 # anything you put after the below line will override

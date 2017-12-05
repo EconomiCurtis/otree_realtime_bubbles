@@ -25,7 +25,8 @@ class InitialAction(Page):
 
 
 class InitialActionWaitPage(WaitPage):
-    pass
+    title_text = "The Round Will Start Soon"
+    body_text = "The round will start the moment all players made their initial selection. "
 
 
 class BubblesDemo(Page):
@@ -71,6 +72,7 @@ def get_output_table(events):
     participant_dict = {}
     for event in events:
         if event.channel == 'group_decisions' or event.channel == 'state':
+
 
             rows.append([
                 event.timestamp,
